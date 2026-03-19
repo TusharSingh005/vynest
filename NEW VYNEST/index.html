@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vynest - Find Verified Rooms, PGs & Hostels Near You</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" type="image/png" href="/imgs/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Find verified rooms, PGs, and hostels near your college with Vynest. Trusted by students and property owners across India.">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/01/31/09/20260131093009-MPUY9V47.js" defer></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XE9WCW7ZB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XE9WCW7ZB');
+</script>
+</head>
+<body class="bg-white text-slate-700">
+<style>
+  body {
+          font-family: 'Inter', sans-serif;
+          -webkit-font-smoothing: antialiased;
+      }
+    html{
+        scroll-behavior: smooth;
+    }
+    /* Smooth slide animation for mobile menu */
+    #mobile-menu {
+        transition: transform 0.3s ease-in-out;
+    }
+    #mobile-menu.hidden-custom {
+        transform: translateX(100%);
+    }
+     #faq {
+  scroll-margin-top: 120px;
+}
+
+ #works {
+  scroll-margin-top: 120px;
+}
+
+ #why {
+  scroll-margin-top: 120px;
+}.modal-animate {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+</style>
+
+<nav class="sticky top-0 z-50 bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <a href="index.html">
+      <img src="imgs/logo.png" alt="logo" width="150px">
+    </a>
+  </div>
+
+  <div class="flex items-center gap-8">
+    <div class="hidden md:flex items-center gap-8 text-gray-600 font-medium">
+      <a href="index.html" class="text-indigo-600 border-b-2 border-indigo-600">Home</a>
+      <a href="pages/about.html" class="hover:text-indigo-600 transition">About</a>
+      <a href="/pages/rooms.html" class="hover:text-indigo-600 transition">Rooms</a>
+      <a href="#cta" class="hover:text-indigo-600 transition text-nowrap">Register your Property</a>
+      <a href="/pages/contact.html" class="hover:text-indigo-600 transition">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="./pages/login.html" id="login-btn-container">
+        <button class="bg-indigo-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-md">
+          Login
+        </button>
+      </a>
+
+    <div class="relative hidden" id="profile-dropdown-container">
+  <button id="profile-btn" onclick="toggleMainProfileDropdown()" class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full p-1 pr-3 hover:bg-slate-100 transition focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+    <div id="user-avatar" class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black uppercase shadow-inner border border-white/20">
+      --
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <div id="main-profile-dropdown" class="absolute right-0 mt-3 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden z-50 hidden modal-animate">
+    <div class="px-5 py-4 border-b bg-slate-50/50">
+      <p id="user-role-label" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Account</p>
+      <p id="user-email-nav" class="text-xs font-bold text-slate-700 truncate">Loading...</p>
+    </div>
+    
+    <div class="p-1.5">
+      <a href="/dashboards/student/index.html" id="dashboard-link" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition font-medium">
+        <span class="text-indigo-400 text-xs">🏠</span> Dashboard
+      </a>
+
+      <a href="/dashboards/student/profile.html" id="profile-link" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition font-medium">
+        <span class="text-indigo-400 text-xs">👤</span> My Profile
+      </a>
+
+      <button onclick="handleMainLogout()" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition font-medium border-t border-slate-50 mt-1 pt-2">
+        <span class="text-red-400 text-xs">🚪</span> Log out
+      </button>
+    </div>
+  </div>
+</div>
+      <button id="menu-btn" class="md:hidden text-gray-600 focus:outline-none z-[60]">
+        <svg id="menu-icon" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-overlay" class="fixed inset-0 bg-black/20 hidden z-40 md:hidden"></div>
+
+  <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-white shadow-2xl z-50 md:hidden hidden-custom">
+    <div class="flex flex-col p-8 pt-24 space-y-6 font-medium text-gray-600 h-full">
+      <a href="index.html" class="text-indigo-600 text-lg">Home</a>
+      <a href="/pages/about.html" class="hover:text-indigo-600 transition text-lg">About</a>
+      <a href="/pages/rooms.html" class="hover:text-indigo-600 transition text-lg">Rooms</a>
+      <a href="#cta" class="hover:text-indigo-600 transition text-lg">Register your Property</a>
+      <a href="/pages/contact.html" class="hover:text-indigo-600 transition text-lg">Contact</a>
+      <hr class="border-gray-100">
+      
+      <div id="mobile-auth-container">
+        <a href="/pages/login.html" id="mobile-login-btn">
+          <button class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">Login</button>
+        </a>
+        <div id="mobile-profile-links" class="hidden space-y-6">
+          
+          <button onclick="handleMainLogout()" class="w-full text-left text-red-600 text-lg font-bold">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script defer>
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  const overlay = document.getElementById('menu-overlay');
+
+  function toggleMenu() {
+    const isHidden = mobileMenu.classList.contains('hidden-custom');
+    
+    if (isHidden) {
+        // Open
+        mobileMenu.classList.remove('hidden-custom');
+        overlay.classList.remove('hidden');
+        menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>`;
+        document.body.style.overflow = 'hidden'; // Prevent scroll
+    } else {
+        // Close
+        mobileMenu.classList.add('hidden-custom');
+        overlay.classList.add('hidden');
+        menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>`;
+        document.body.style.overflow = ''; // Allow scroll
+    }
+  }
+
+  menuBtn.addEventListener('click', toggleMenu);
+  overlay.addEventListener('click', toggleMenu);
+
+  // Close menu if a link is clicked
+  const navLinks = mobileMenu.querySelectorAll('a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        if (!mobileMenu.classList.contains('hidden-custom')) {
+            toggleMenu();
+        }
+    });
+  });
+</script>
+
+<!-- ==============================hero=================================== -->
+ <section class="relative h-[50vh] min-h-[400px] md:h-[80vh] md:min-h-[600px] w-full flex flex-col items-center justify-center text-center px-4">
+  <div class="absolute inset-0 z-0">
+    <img src="imgs/bg.jpg" loading="lazy" alt="Interior" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
+
+  <div class="relative z-10 max-w-4xl px-2">
+<h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-3 md:mb-4 leading-tight"> Find Your Perfect <br>
+      <span class="text-indigo-300">Room & Stay</span>
+    </h1>
+    <p class="text-white text-sm md:text-xl font-light max-w-md md:max-w-2xl mx-auto opacity-90 leading-relaxed">
+      Book verified Rooms, PGs, and Hostels near your college.
+      <br>
+      Trusted By Students and Owners
+    </p>
+  </div>
+
+<div class="absolute -bottom-8 md:-bottom-10 z-20 w-full max-w-4xl px-4">
+  <div class="bg-white rounded-2xl md:rounded-full shadow-2xl p-1.5 md:p-2 flex items-center gap-1 md:gap-2 border border-gray-100">
+      
+    <!-- SEARCH INPUT -->
+    <div class="relative flex-grow min-w-0">
+
+      <!-- Search Icon -->
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+
+      <input 
+        id="searchInput"
+        type="text" 
+        placeholder="Location..."
+        class="w-full bg-transparent pl-9 pr-2 py-3 text-gray-700 focus:outline-none text-sm md:text-base"
+      />
+
+    </div>
+
+    <!-- NEAR ME -->
+    <button
+      id="nearMeBtn"
+      class="flex items-center justify-center gap-1 bg-gray-50 hover:bg-gray-100 text-gray-600 px-3 md:px-4 py-2.5 rounded-xl md:rounded-full transition shrink-0"
+    >
+      <span class="text-pink-500 text-base md:text-lg">📍</span>
+      <span class="hidden sm:inline text-xs md:text-sm font-medium">Near Me</span>
+    </button>
+
+    <!-- SEARCH BUTTON -->
+    <button
+      id="searchBtn"
+      class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 md:p-4 rounded-xl md:rounded-full transition shadow-lg shrink-0"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </button>
+
+  </div>
+</div>
+
+<!-- RADIUS SLIDER (HIDDEN) -->
+<div id="radiusContainer" class="hidden">
+  <div class="flex items-center gap-3 mt-3 px-2">
+    <span class="text-xs text-slate-500 font-medium">Radius</span>
+
+    <input
+      type="range"
+      id="radiusSlider"
+      min="1"
+      max="10"
+      value="5"
+      class="flex-1 accent-indigo-600 cursor-pointer"
+    />
+
+    <span id="radiusValue" class="text-xs font-bold text-indigo-600">
+      5 km
+    </span>
+  </div>
+</div>
+
+</section>
+
+<div class="h-16 md:h-24"></div>
+
+<section class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 md:gap-0 mb-6 md:mb-10">
+        <div>
+            <h2 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
+                Available Rooms
+            </h2>
+            </div>
+        
+        <div class="flex items-center gap-2">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            <p class="text-slate-500 text-xs md:text-sm font-bold uppercase tracking-wider" id="roomCount">
+                Loading rooms...
+            </p>
+        </div>
+    </div>
+
+    <div id="mainRoomGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+        </div>
+</section>
+ 
+<!-- ==============================why us =================================== -->
+<section class="max-w-7xl mx-auto px-4 py-8 md:py-20 text-center" id="why">
+  <div class="mb-8 md:mb-16">
+    <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 mb-2 md:mb-4">
+      Why Choose <span class="text-indigo-600">Vynest</span>
+    </h2>
+    <p class="text-[10px] md:text-base text-gray-500 max-w-lg mx-auto leading-tight md:leading-relaxed">
+      We make student accommodation simpler, safer, and smarter for everyone.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
+    
+    <div class="group bg-white border-2 border-amber-100 rounded-xl p-3 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-2 hover:border-amber-400 transition-all duration-300 flex flex-col items-center">
+      <div class="w-10 h-10 md:w-16 md:h-16 bg-amber-400 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-6 shadow-lg shadow-amber-100 group-hover:scale-110 transition-transform duration-300">
+        <span class="text-lg md:text-2xl">🔍</span>
+      </div>
+      <h3 class="text-xs md:text-xl font-bold text-slate-800 mb-1 md:mb-2 group-hover:text-amber-600 transition-colors">Verified</h3>
+      <p class="hidden md:block text-gray-500 text-sm">Rooms are reviewed to reduce fake listings.</p>
+      <p class="md:hidden text-gray-500 text-[10px] leading-none">Verified rooms only.</p>
+    </div>
+
+    <div class="group bg-white border-2 border-green-100 rounded-xl p-3 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-2 hover:border-green-500 transition-all duration-300 flex flex-col items-center">
+      <div class="w-10 h-10 md:w-16 md:h-16 bg-green-500 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-6 shadow-lg shadow-green-100 group-hover:scale-110 transition-transform duration-300">
+        <span class="text-lg md:text-2xl">💼</span>
+      </div>
+      <h3 class="text-xs md:text-xl font-bold text-slate-800 mb-1 md:mb-2 group-hover:text-green-600 transition-colors">No Broker</h3>
+      <p class="hidden md:block text-gray-500 text-sm">Direct contact with owners. No hidden fees.</p>
+      <p class="md:hidden text-gray-500 text-[10px] leading-none">No hidden fees.</p>
+    </div>
+
+    <div class="group bg-white border-2 border-indigo-100 rounded-xl p-3 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-2 hover:border-indigo-500 transition-all duration-300 flex flex-col items-center">
+      <div class="w-10 h-10 md:w-16 md:h-16 bg-indigo-500 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-6 shadow-lg shadow-indigo-100 group-hover:scale-110 transition-transform duration-300">
+        <span class="text-lg md:text-2xl">🎓</span>
+      </div>
+      <h3 class="text-xs md:text-xl font-bold text-slate-800 mb-1 md:mb-2 group-hover:text-indigo-600 transition-colors">Student First</h3>
+      <p class="hidden md:block text-gray-500 text-sm">Search by college, budget, and food.</p>
+      <p class="md:hidden text-gray-500 text-[10px] leading-none">Built for you.</p>
+    </div>
+
+    <div class="group bg-white border-2 border-red-100 rounded-xl p-3 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-2 hover:border-red-500 transition-all duration-300 flex flex-col items-center">
+      <div class="w-10 h-10 md:w-16 md:h-16 bg-red-500 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-6 shadow-lg shadow-red-100 group-hover:scale-110 transition-transform duration-300">
+        <span class="text-lg md:text-2xl">📊</span>
+      </div>
+      <h3 class="text-xs md:text-xl font-bold text-slate-800 mb-1 md:mb-2 group-hover:text-red-600 transition-colors">Easy Listing</h3>
+      <p class="hidden md:block text-gray-500 text-sm">Post rooms and get genuine bookings.</p>
+      <p class="md:hidden text-gray-500 text-[10px] leading-none">Manage leads.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==============================how it works  =================================== -->
+<section class="bg-slate-50 w-full py-12 md:py-24" id="works">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+      
+      <div class="relative w-full lg:w-1/2 flex justify-center lg:justify-start">
+        <div class="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl z-10">
+          <img src="imgs/1.jpg" alt="Room Interior" class="w-full h-full object-cover"  loading="lazy">
+        </div>
+        
+        <div class="hidden md:block absolute -bottom-10 -left-10 w-2/3 aspect-video rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-20">
+          <img src="imgs/2.jpg" alt="Student using laptop" class="w-full h-full object-cover"  loading="lazy">
+        </div>
+      </div>
+
+      <div class="w-full lg:w-1/2">
+        <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold tracking-wider uppercase mb-6">
+          How Vynest Works
+        </span>
+        
+        <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+          Find Your Stay in <span class="text-indigo-600">3 Simple Steps</span>
+        </h2>
+        
+        <p class="text-gray-500 text-base md:text-lg mb-10 leading-relaxed">
+          Vynest helps students find safe and affordable accommodation near their college without hassle.
+        </p>
+
+        <div class="space-y-8">
+          <div class="flex gap-5">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-100">
+              01
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-800 mb-1">Search Rooms</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">Browse verified rooms, PGs, and flats by location, college, budget, and preferences.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-5">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-100">
+              02
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-800 mb-1">Booking</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">View full room details and book room directly.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-5">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-400 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-100">
+              03
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-800 mb-1">Move In Confidently</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">Connect with the owner, confirm details, and move in with confidence.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==============================testimonial  =================================== -->
+<section class="max-w-7xl mx-auto px-6 py-12 md:py-24 overflow-hidden">
+  <div class="text-center mb-12">
+    <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest mb-4">
+      Community Feedback
+    </span>
+    <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900">What Our Community Says</h2>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto overflow-hidden">
+    <div id="slider-track" class="flex transition-transform duration-500 ease-out gap-6">
+      
+      <div class="review-card w-[300px] md:w-[400px] flex-shrink-0 bg-white border-2 border-yellow-400 p-8 rounded-3xl shadow-sm">
+        <div class="text-yellow-400 mb-4 text-lg">★★★★★ <span class="text-slate-800 ml-2 font-bold">5.0</span></div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">"Vynest made moving to a new city so easy. I found a verified PG near my college in just a few hours."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/150?u=a" class="w-10 h-10 rounded-full grayscale">
+          <h4 class="font-bold text-sm">Aditya Verma</h4>
+        </div>
+      </div>
+
+      <div class="review-card w-[300px] md:w-[400px] flex-shrink-0 bg-white border-2 border-yellow-400 p-8 rounded-3xl shadow-sm">
+        <div class="text-yellow-400 mb-4 text-lg">★★★★★ <span class="text-slate-800 ml-2 font-bold">4.9</span></div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">"The 'No Brokerage' policy is the best part. I saved thousands of rupees compared to using an agent."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/150?u=b" class="w-10 h-10 rounded-full grayscale">
+          <h4 class="font-bold text-sm">Ishita Singh</h4>
+        </div>
+      </div>
+
+      <div class="review-card w-[300px] md:w-[400px] flex-shrink-0 bg-white border-2 border-yellow-400 p-8 rounded-3xl shadow-sm">
+        <div class="text-yellow-400 mb-4 text-lg">★★★★★ <span class="text-slate-800 ml-2 font-bold">4.8</span></div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">"Clean UI and very easy to contact owners. The filters for food and AC rooms worked perfectly for me."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/150?u=c" class="w-10 h-10 rounded-full grayscale">
+          <h4 class="font-bold text-sm">Rohan Mehta</h4>
+        </div>
+      </div>
+
+      <div class="review-card w-[300px] md:w-[400px] flex-shrink-0 bg-white border-2 border-yellow-400 p-8 rounded-3xl shadow-sm">
+        <div class="text-yellow-400 mb-4 text-lg">★★★★★ <span class="text-slate-800 ml-2 font-bold">5.0</span></div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">"As a property owner, Vynest has helped me find genuine student tenants without any headache."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/150?u=d" class="w-10 h-10 rounded-full grayscale">
+          <h4 class="font-bold text-sm">Mr. Kapoor</h4>
+        </div>
+      </div>
+
+      <div class="review-card w-[300px] md:w-[400px] flex-shrink-0 bg-white border-2 border-yellow-400 p-8 rounded-3xl shadow-sm">
+        <div class="text-yellow-400 mb-4 text-lg">★★★★★ <span class="text-slate-800 ml-2 font-bold">4.7</span></div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">"The location-based search is highly accurate. It showed me exactly which houses were within walking distance."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/150?u=e" class="w-10 h-10 rounded-full grayscale">
+          <h4 class="font-bold text-sm">Sneha Rao</h4>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<script defer>
+  const track = document.getElementById('slider-track');
+  const cards = Array.from(track.children);
+  const gap = 24; 
+  let index = 0;
+
+  // 1. CLONE first and last few cards for infinite effect
+  const firstClone = cards[0].cloneNode(true);
+  const lastClone = cards[cards.length - 1].cloneNode(true);
+  track.appendChild(firstClone);
+  track.prepend(lastClone);
+
+  // 2. Initial Position (start at the real first card, not the clone)
+  const updatePosition = () => {
+    const cardWidth = cards[0].offsetWidth + gap;
+    track.style.transform = `translateX(-${(index + 1) * cardWidth}px)`;
+  };
+
+  const moveNext = () => {
+    const cardWidth = cards[0].offsetWidth + gap;
+    index++;
+    track.style.transition = "transform 0.5s ease-out";
+    updatePosition();
+
+    // Check if we reached the end clone
+    if (index === cards.length) {
+      setTimeout(() => {
+        track.style.transition = "none"; // Jump back without animation
+        index = 0;
+        updatePosition();
+      }, 500);
+    }
+  };
+
+  // Run initial setup
+  window.addEventListener('resize', updatePosition);
+  updatePosition();
+
+  // Auto-slide every 3 seconds
+  setInterval(moveNext, 3000);
+</script>
+
+
+
+<!-- ==============================Faq  =================================== -->
+<style>
+  /* Gradient Border Logic for boxes */
+  .faq-item {
+    position: relative;
+    border: 2px solid transparent; 
+    /* First gradient is the inner white fill, second is the outer border line */
+    background-image: linear-gradient(white, white), 
+                      linear-gradient(to right, #6366f1, #a855f7); 
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Subtle lift and glow on hover */
+  .faq-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.15);
+  }
+</style>
+
+<section class="bg-slate-50 w-full py-10 md:py-24" id="faq">
+  <div class="max-w-4xl mx-auto px-4">
+    
+    <div class="text-center mb-10 md:mb-16">
+      <span class="inline-block px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] md:text-xs font-medium uppercase tracking-widest mb-3">
+        Faq
+      </span>
+      <h2 class="text-3xl md:text-4xl font-medium text-slate-900 mb-2 md:mb-4 tracking-tight"><b>Frequently Asked Questions</b></h2>
+      <p class="text-slate-500 text-sm md:text-lg font-normal">Quick answers to help you find your next stay.</p>
+    </div>
+
+    <div class="space-y-4">
+      <div class="faq-item rounded-2xl shadow-sm">
+        <button class="faq-btn w-full flex items-center justify-between p-5 md:p-7 text-left outline-none group">
+          <span class="font-medium text-slate-800 text-base md:text-lg pr-4">How does the booking process work?</span>
+          <div class="relative w-4 h-4 flex items-center justify-center shrink-0 pointer-events-none">
+            <span class="absolute w-full h-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 horiz"></span>
+            <span class="absolute h-full w-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 vert"></span>
+          </div>
+        </button>
+        <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="px-5 md:px-7 pb-6 text-slate-500 text-sm md:text-base font-normal leading-relaxed border-t border-slate-50 pt-4">
+           Choose your preferred room, enter your details, and confirm your booking with a booking fee.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-2xl shadow-sm">
+        <button class="faq-btn w-full flex items-center justify-between p-5 md:p-7 text-left outline-none group">
+          <span class="font-medium text-slate-800 text-base md:text-lg pr-4">Is the booking fee refundable?</span>
+          <div class="relative w-4 h-4 flex items-center justify-center shrink-0 pointer-events-none">
+            <span class="absolute w-full h-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 horiz"></span>
+            <span class="absolute h-full w-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 vert"></span>
+          </div>
+        </button>
+        <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="px-5 md:px-7 pb-6 text-slate-500 text-sm md:text-base font-normal leading-relaxed border-t border-slate-50 pt-4">
+            Booking fees are generally non-refundable as they serve to secure the listing and prevent other students from booking the same room while your request is active.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-2xl shadow-sm">
+        <button class="faq-btn w-full flex items-center justify-between p-5 md:p-7 text-left outline-none group">
+          <span class="font-medium text-slate-800 text-base md:text-lg pr-4">How is room availability managed?</span>
+          <div class="relative w-4 h-4 flex items-center justify-center shrink-0 pointer-events-none">
+            <span class="absolute w-full h-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 horiz"></span>
+            <span class="absolute h-full w-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 vert"></span>
+          </div>
+        </button>
+        <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="px-5 md:px-7 pb-6 text-slate-500 text-sm md:text-base font-normal leading-relaxed border-t border-slate-50 pt-4">
+            Owners update availability directly from their dashboard. For online bookings through Vynest, the inventory is adjusted automatically to ensure real-time accuracy.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-2xl shadow-sm">
+        <button class="faq-btn w-full flex items-center justify-between p-5 md:p-7 text-left outline-none group">
+          <span class="font-medium text-slate-800 text-base md:text-lg pr-4">Are the rooms on Vynest verified?</span>
+          <div class="relative w-4 h-4 flex items-center justify-center shrink-0 pointer-events-none">
+            <span class="absolute w-full h-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 horiz"></span>
+            <span class="absolute h-full w-[1.5px] bg-indigo-400 rounded-full transition-transform duration-300 vert"></span>
+          </div>
+        </button>
+        <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="px-5 md:px-7 pb-6 text-slate-500 text-sm md:text-base font-normal leading-relaxed border-t border-slate-50 pt-4">
+            Yes, we have a multi-step review process to verify listings. This helps reduce fake posts and ensures students find genuine, safe accommodation.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<script defer>
+  // Updated script for cleaner toggle animation
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const content = item.querySelector('.faq-content');
+      const horiz = btn.querySelector('.horiz');
+      const vert = btn.querySelector('.vert');
+      const isOpen = content.style.maxHeight;
+
+      // Close all others
+      document.querySelectorAll('.faq-content').forEach(c => {
+        c.style.maxHeight = null;
+        c.classList.add('opacity-0');
+        const b = c.parentElement.querySelector('.faq-btn');
+        b.querySelector('.horiz').style.transform = 'rotate(0deg)';
+        b.querySelector('.vert').style.transform = 'rotate(0deg)';
+      });
+
+      if (!isOpen) {
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.classList.remove('opacity-0');
+        horiz.style.transform = 'rotate(45deg)';
+        vert.style.transform = 'rotate(45deg)';
+      }
+    });
+  });
+</script>
+
+
+<!-- ==============================cta =================================== -->
+ <section class="owner-ad" id="cta">
+  <div class="owner-container"> <div class="owner-ad-content">
+
+      <div class="owner-ad-text" id="register">
+        <span class="owner-eyebrow">Register your property</span>
+        <h2> Rent Faster at the Right Price!</h2>
+        <p>Your perfect student tenant is waiting. List your room on Vynest now.</p>
+
+        <a href="/pages/signup.html" class="btn post-btn">Post Room, It’s FREE</a>
+      </div>
+
+      <div class="owner-ad-image">
+        <img src="/imgs/3.png" alt="Post Room on Vynest"loading="lazy" >
+      </div>
+
+    </div>
+  </div>
+</section>
+<style>
+ #cta {
+  scroll-margin-top: 120px;
+}
+
+ :root {
+  --primary-purple: #5c56f6;
+}
+
+.owner-ad {
+  /* Increased from 1200px to 1400px to match the wide style */
+  max-width: 1400px; 
+  margin: 60px auto;
+  background: linear-gradient(135deg,  #dff0e4);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+}
+
+/* MAIN GRID */
+.owner-ad-content {
+  display: grid;
+  /* Shifted ratio to give the text more 'breathing room' in a wide layout */
+  grid-template-columns: 1.4fr 1fr; 
+  align-items: center;
+  /* Increased horizontal padding to 80px for a 'longer' feel */
+  padding: 60px 80px 0; 
+  gap: 60px;
+}
+
+/* LEFT TEXT */
+.owner-ad-text h2 {
+  font-size: 46px; /* Slightly larger to fill the wider space */
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: #0a2540;
+}
+
+.owner-ad-text p {
+  font-size: 18px; /* Improved readability for wider containers */
+  color: #4a4a4a;
+  max-width: 580px;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+/* --- OWNER SECTION EYEBROW --- */
+.owner-eyebrow {
+  display: block;
+  color: #7b61ff; /* Your primary purple */
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+/* Adjusting the H2 slightly to sit better under the eyebrow */
+.owner-ad-text h2 {
+  font-size: 42px;
+  line-height: 1.2;
+  margin-bottom: 15px;
+  color: #0a2540;
+}
+
+/* Responsive fix for small text */
+@media (max-width: 768px) {
+  .owner-eyebrow {
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+}
+
+/* --- UPDATED OWNER SECTION BUTTON --- */
+.post-btn {
+  /* Use your brand purple variable */
+  background: var(--primary-purple); 
+  padding: 16px 36px;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: 700;
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  /* Purple-tinted shadow for the "Purple Touch" */
+  box-shadow: 0 4px 15px rgba(90, 75, 255, 0.3); 
+  border: none;
+  cursor: pointer;
+}
+
+.post-btn:hover {
+  transform: translateY(-3px);
+  /* Stronger glow on hover */
+  box-shadow: 0 8px 25px rgba(90, 75, 255, 0.45);
+  background: #4839e6; /* A slightly deeper purple for the hover state */
+}
+/* RIGHT IMAGE */
+.owner-ad-image {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.owner-ad-image img {
+  height: 400px; /* Taller image to match the wider section */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 1440px) {
+  .owner-ad {
+    max-width: 95%;
+    margin: 40px auto;
+  }
+  .owner-ad-content {
+    padding: 50px 50px 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .owner-ad-content {
+    grid-template-columns: 1fr;
+    padding: 40px 24px 0;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .owner-ad-text h2 {
+    font-size: 32px;
+  }
+
+  .owner-ad-text p {
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .owner-ad-image {
+    justify-content: center;
+  }
+
+  .owner-ad-image img {
+    height: 300px;
+  }
+}
+</style>
+  
+<!-- ==============================footer  =================================== -->
+ <footer class="bg-[#05192d] text-gray-300 pt-12 pb-8 px-6 font-sans border-t border-white/5">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-12">
+      
+      <div class="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
+        <div class="flex items-center gap-3 mb-4">
+          
+          <div class="flex flex-col">
+            <a href="index.html"><img src="../imgs/logo-footer.png" alt="" width="160px"></a>
+          </div>
+        </div>
+        <p class="text-white font-semibold mb-2 text-sm md:text-base  ">A Trusted Nest For Everyone, Everywhere.</p>
+        <p class="text-white text-xs md:text-sm leading-relaxed mb-6">
+          Revolutionizing the student accommodation market through trust, verification, and technology.
+        </p>
+
+        <div class="flex gap-3">
+          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5">📷</a>
+          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"><b>in</b></a>
+          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"><b>i</b></a>
+          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"><b>X</b></a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-10 w-full md:w-auto text-center md:text-left">
+        <div>
+          <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">Explore</h4>
+          <ul class="space-y-3 text-xs md:text-sm text-white">
+            <li><a href="./pages/rooms.html" class="hover:text-white transition-colors">Search Rooms</a></li>
+            <li><a href="./pages/pg.html" class="hover:text-white transition-colors">Private PGs</a></li>
+            <li><a href="./pages/flat.html" class="hover:text-white transition-colors">Shared Flats</a></li>
+            <li><a href="./pages/hostel.html" class="hover:text-white transition-colors">Hostels</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">Company</h4>
+          <ul class="space-y-3 text-xs md:text-sm text-white">
+            <li><a href="./pages/about.html" class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="./pages/privacy-policy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="./pages/terms&conditions.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+            <li><a href="./pages/contact.html" class="hover:text-white transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">Product</h4>
+          <ul class="space-y-3 text-xs md:text-sm text-white">
+            <li><a href="#faq" class="hover:text-white transition-colors">FAQs</a></li>
+            <li><a href="#works" class="hover:text-white transition-colors">How Vynest works</a></li>
+            <li><a href="#cta" class="hover:text-white transition-colors">List Your Property</a></li>
+            <li><a href="#why" class="hover:text-white transition-colors">Why Choose Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+      
+      <p class="text-[11px] md:text-xs text-white order-3 md:order-1">
+        © 2026 Vynest. All rights reserved.
+      </p>
+
+      <div class="bg-[#0d2338] px-6 py-2 rounded-full border border-white/5 text-[11px] md:text-xs text-white shadow-xl order-1 md:order-2">
+        Made with <span class="text-rose-500 animate-pulse">❤️</span> by <span class="text-purple-300 font-semibold"><a href="https://webprimesite.com/">WebPrimeSite</a></span>
+      </div>
+
+      <div class="flex gap-6 text-[11px] md:text-xs text-white font-medium order-2 md:order-3">
+        <a href="./pages/privacy-policy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="./pages/refund-policy.html" class="hover:text-white transition-colors">Refund Policy</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<div id="blockModal" class="fixed inset-0 z-[100] flex items-center justify-center px-4 hidden">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    
+    <div class="relative bg-white w-full max-w-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl text-center transform transition-all scale-95 opacity-0 duration-300" id="modalCard">
+        <div class="w-20 h-20 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+            <i class="fa-solid fa-user-slash"></i>
+        </div>
+        
+        <h2 class="text-2xl font-black text-slate-900 mb-2">Access Denied</h2>
+        <p class="text-slate-500 font-medium mb-8 leading-relaxed">Your account has been restricted by the admin. Please contact our support team for further assistance.</p>
+        
+        <button onclick="closeBlockModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all active:scale-95">
+            Understood
+        </button>
+    </div>
+</div>
+
+ 
+<!-- ================= NO ROOMS MODAL ================= -->
+<div id="noRoomsModal" class="fixed inset-0 z-[120] flex items-center justify-center px-4 hidden">
+
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+  <div id="noRoomsCard"
+       class="relative bg-white w-full max-w-xs rounded-2xl p-6 shadow-2xl text-center transform scale-95 opacity-0 transition-all duration-300">
+
+    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-xl mx-auto mb-3">
+      📍
+    </div>
+
+    <h2 class="text-base font-bold text-slate-900 mb-1">
+      No Rooms Nearby
+    </h2>
+
+    <p class="text-slate-500 text-xs mb-4">
+      No rooms found within <span class="font-bold text-indigo-600">10km</span>.
+    </p>
+
+    <button onclick="closeNoRoomsModal()"
+      class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
+      OK
+    </button>
+
+  </div>
+</div>
+
+
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  /* ================= FIREBASE ================= */
+  const firebaseConfig = {
+    apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+    authDomain: "vynest-b58fa.firebaseapp.com",
+    projectId: "vynest-b58fa",
+    storageBucket: "vynest-b58fa.firebasestorage.app",
+    messagingSenderId: "503196958388",
+    appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
+  };
+
+  // ✅ INIT FIRST
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+ // ===== DOM ELEMENTS =====
+  const loginBtnContainer = document.getElementById("login-btn-container");
+  const profileDropdownContainer = document.getElementById("profile-dropdown-container");
+  const userAvatar = document.getElementById("user-avatar");
+  const userNameNav = document.getElementById("user-name-nav");
+
+  const mobileLoginBtn = document.getElementById("mobile-login-btn");
+  const mobileProfileLinks = document.getElementById("mobile-profile-links");
+
+ const dashboardLink = document.getElementById("dashboard-link");
+ const mobileDashboardLink = document.getElementById("mobile-dashboard-link");
+
+  /* ===================== MODAL HELPERS ===================== */
+window.showBlockModal = () => {
+    const modal = document.getElementById('blockModal');
+    const card = document.getElementById('modalCard');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }, 10);
+};
+
+window.closeBlockModal = () => {
+    const modal = document.getElementById('blockModal');
+    const card = document.getElementById('modalCard');
+    card.classList.add('scale-95', 'opacity-0');
+    card.classList.remove('scale-100', 'opacity-100');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        window.location.href = "/pages/login.html"; // Redirect after closing
+    }, 300);
+};
+
+/* ===================== UPDATED AUTH STATE WITH BLOCK CHECK ===================== */
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (snap.exists()) {
+            const userData = snap.data();
+
+            // 🔥 THE BLOCK CHECK: Enforce logout if status is 'blocked'
+            if (userData.status === 'blocked') {
+                await signOut(auth); // Clear local session immediately
+                showBlockModal();    // Trigger premium modal
+                return;
+            }
+
+            // SUCCESS: Setup standard UI
+            loginBtnContainer.classList.add("hidden");
+            profileDropdownContainer.classList.remove("hidden");
+            mobileLoginBtn.classList.add("hidden");
+            mobileProfileLinks.classList.remove("hidden");
+
+            const email = user.email || "User";
+            document.getElementById("user-email-nav").innerText = email;
+            userAvatar.innerText = email.charAt(0).toUpperCase();
+
+            const role = userData.role || "student";
+            document.getElementById("user-role-label").innerText = role === "owner" ? "Owner Account" : "Student Account";
+
+            // Set dynamic dashboard links
+            const dashboardPath = role === "owner" ? "/dashboards/owner/index.html" : "/dashboards/student/index.html";
+            dashboardLink.href = dashboardPath;
+            if(mobileDashboardLink) mobileDashboardLink.href = dashboardPath;
+            document.getElementById("profile-link").href = role === "owner" ? "/dashboards/owner/profile.html" : "/dashboards/student/profile.html";
+        }
+    } else {
+        // Handle logged out state
+        loginBtnContainer.classList.remove("hidden");
+        profileDropdownContainer.classList.add("hidden");
+        mobileLoginBtn.classList.remove("hidden");
+        mobileProfileLinks.classList.add("hidden");
+    }
+});
+// ===== PROFILE DROPDOWN =====
+  window.toggleMainProfileDropdown = function () {
+    document
+      .getElementById("main-profile-dropdown")
+      .classList.toggle("hidden");
+  };
+
+  // ===== LOGOUT =====
+  window.handleMainLogout = async function () {
+    await signOut(auth);
+    window.location.href = "/index.html";
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener("click", (e) => {
+    const dropdown = document.getElementById("main-profile-dropdown");
+    const button = document.getElementById("profile-btn");
+
+    if (
+      dropdown &&
+      !dropdown.contains(e.target) &&
+      button &&
+      !button.contains(e.target)
+    ) {
+      dropdown.classList.add("hidden");
+    }
+  });
+
+  
+  /* ================= GLOBAL STATE ================= */
+  let allRooms = [];
+  let locationSet = new Set();
+  let selectedRadius = 5; // km default
+
+  /* ================= STYLE HELPERS ================= */
+  const getPropertyStyle = (type) => {
+    switch (type) {
+      case "flat": return "bg-purple-50 text-purple-600 border-purple-100";
+      case "pg_with_food": return "bg-green-50 text-green-600 border-green-100";
+      case "pg_no_food": return "bg-red-50 text-red-600 border-red-100";
+      case "hostel": return "bg-slate-100 text-slate-600 border-slate-200";
+      default: return "bg-gray-50 text-gray-600 border-gray-100";
+    }
+  };
+
+  const getGenderStyle = (gender) => {
+    switch (gender) {
+      case "male": return "bg-blue-50 text-blue-600 border-blue-100";
+      case "female": return "bg-pink-50 text-pink-600 border-pink-100";
+      case "unisex": return "bg-yellow-50 text-yellow-600 border-yellow-100";
+      default: return "bg-gray-50 text-gray-600 border-gray-100";
+    }
+  };
+ 
+ /* ================= RENDER ROOMS ================= */
+
+function renderRooms(rooms) {
+  const grid = document.getElementById("mainRoomGrid");
+  const countEl = document.getElementById("roomCount");
+  grid.innerHTML = "";
+
+  if (!rooms.length) {
+    grid.innerHTML = `<p class="col-span-full text-center py-10 text-gray-400">No matching rooms found.</p>`;
+    countEl.innerText = "0 Properties Found";
+    return;
+  }
+
+  countEl.innerText = `${rooms.length} Properties Found`;
+
+  rooms.forEach(room => {
+    const pStyle = getPropertyStyle(room.propertyType);
+    const gStyle = getGenderStyle(room.gender); 
+    
+    const bedsLeft = room.totalBeds || 0;
+    const isAvailable = bedsLeft > 0;
+    const badgeClass = isAvailable ? "bg-black/60" : "bg-red-600";
+    const badgeText = isAvailable ? `${bedsLeft} Beds Left` : "Sold Out";
+
+    grid.innerHTML += `
+      <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 group relative">
+        <div class="absolute top-4 left-4 ${badgeClass} backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg z-10">
+            ${badgeText}
+        </div>
+
+        <div class="h-52 overflow-hidden">
+          <img src="${room.imageUrls?.[0] || 'https://via.placeholder.com/400x300'}" 
+               class="w-full h-full object-cover group-hover:scale-110 transition duration-500 ${!isAvailable ? 'grayscale' : ''}">
+        </div>
+
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="text-lg font-bold text-slate-800 truncate pr-2">${room.propertyName}</h3>
+            <div class="flex gap-1 shrink-0">
+              <span class="${pStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
+                ${room.propertyType.replace(/_/g, " ")}
+              </span>
+              <span class="${gStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
+                ${room.gender === 'male' ? 'boy' : room.gender === 'female' ? 'girl' : 'unisex'}
+              </span>
+            </div>
+          </div>
+
+          <p class="text-slate-400 text-xs mb-4 flex items-center gap-1 truncate">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            ${room.address || ""}
+          </p>
+
+          <div class="flex justify-between items-center pt-2 border-t border-slate-50">
+            <div>
+              <span class="text-xs text-slate-400 block leading-none">Starting from</span>
+              <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
+              <span class="text-[10px] text-slate-400">/mo</span>
+            </div>
+
+            <a href="/pages/room-details.html?id=${room.id}" 
+               class="${isAvailable ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-slate-400 cursor-not-allowed'} text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+              ${isAvailable ? 'View Details' : 'Full'}
+            </a>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+  /* ================= FETCH ROOMS ================= */
+  function fetchMainRooms() {
+    const q = query(collection(db, "rooms"), orderBy("createdAt", "desc"));
+
+    onSnapshot(q, (snapshot) => {
+      allRooms = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Collect locations for suggestions
+      locationSet.clear();
+      allRooms.forEach(r => {
+        if (r.address) locationSet.add(r.address);
+      });
+
+      renderRooms(allRooms);
+    });
+  }
+
+  fetchMainRooms();
+
+  /* ================= SEARCH SUGGESTIONS ================= */
+  const searchInput = document.getElementById("searchInput");
+
+  const suggestionBox = document.createElement("div");
+  suggestionBox.className =
+    "absolute left-0 right-0 top-full mt-2 bg-white border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto hidden";
+  searchInput.parentElement.style.position = "relative";
+  searchInput.parentElement.appendChild(suggestionBox);
+
+  searchInput.addEventListener("input", () => {
+    const value = searchInput.value.toLowerCase().trim();
+    suggestionBox.innerHTML = "";
+
+    if (!value) {
+      suggestionBox.classList.add("hidden");
+      return;
+    }
+
+    const matches = [...locationSet]
+      .filter(loc => loc.toLowerCase().includes(value))
+      .slice(0, 6);
+
+    if (!matches.length) {
+      suggestionBox.classList.add("hidden");
+      return;
+    }
+
+    matches.forEach(loc => {
+      const item = document.createElement("div");
+      item.className = "px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer";
+      item.innerText = loc;
+
+      item.onclick = () => {
+        searchInput.value = loc;
+        suggestionBox.classList.add("hidden");
+        filterByText(loc);
+      };
+
+      suggestionBox.appendChild(item);
+    });
+
+    suggestionBox.classList.remove("hidden");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target)) {
+      suggestionBox.classList.add("hidden");
+    }
+  });
+
+  /* ================= TEXT SEARCH ================= */
+  function filterByText(keyword) {
+    const k = keyword.toLowerCase();
+    const filtered = allRooms.filter(room =>
+      room.address?.toLowerCase().includes(k) ||
+      room.propertyName?.toLowerCase().includes(k)
+    );
+    renderRooms(filtered);
+  }
+
+  document.getElementById("searchBtn").addEventListener("click", () => {
+    const keyword = searchInput.value.trim();
+    if (!keyword) renderRooms(allRooms);
+    else filterByText(keyword);
+  });
+
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("searchBtn").click();
+    }
+  });
+
+  /* ================= RADIUS SLIDER ================= */
+  const radiusSlider = document.getElementById("radiusSlider");
+  const radiusValue = document.getElementById("radiusValue");
+
+  if (radiusSlider && radiusValue) {
+    radiusSlider.addEventListener("input", () => {
+      selectedRadius = Number(radiusSlider.value);
+      radiusValue.innerText = `${selectedRadius} km`;
+    });
+  }
+
+/* ================= NO ROOMS MODAL ================= */
+
+window.showNoRoomsModal = () => {
+  const modal = document.getElementById("noRoomsModal");
+  const card = document.getElementById("noRoomsCard");
+
+  modal.classList.remove("hidden");
+
+  setTimeout(() => {
+    card.classList.remove("scale-95", "opacity-0");
+    card.classList.add("scale-100", "opacity-100");
+  }, 10);
+};
+
+window.closeNoRoomsModal = () => {
+  const modal = document.getElementById("noRoomsModal");
+  const card = document.getElementById("noRoomsCard");
+
+  card.classList.add("scale-95", "opacity-0");
+
+  setTimeout(() => {
+    modal.classList.add("hidden");
+  }, 300);
+};
+
+
+ /* ================= NEAR ME SEARCH (FIXED 10 KM) ================= */
+document.getElementById("nearMeBtn").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser.");
+    return;
+  }
+
+  // Visual feedback for the user
+  const nearMeBtn = document.getElementById("nearMeBtn");
+  const originalContent = nearMeBtn.innerHTML;
+  nearMeBtn.innerHTML = `<span class="animate-spin text-lg">⏳</span> <span class="hidden sm:inline text-xs md:text-sm font-medium">Locating...</span>`;
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const userLat = pos.coords.latitude;
+      const userLng = pos.coords.longitude;
+
+      const nearbyRooms = allRooms.filter(room => {
+        // Based on your Firestore screenshot, coordinates are in the 'location' field
+        const loc = room.location;
+        if (!loc || loc.lat === undefined || loc.lng === undefined) return false;
+
+        const distance = getDistance(userLat, userLng, loc.lat, loc.lng);
+        
+        // 🔥 Filter rooms within a 10km radius
+        return distance <= 10;
+      });
+
+      // Reset button UI
+      nearMeBtn.innerHTML = originalContent;
+
+      if (nearbyRooms.length === 0) {
+        showNoRoomsModal();
+      }
+      
+      renderRooms(nearbyRooms);
+    },
+    (err) => {
+      nearMeBtn.innerHTML = originalContent;
+      alert("Unable to fetch your location. Please ensure GPS is enabled.");
+    },
+    { enableHighAccuracy: true }
+  );
+});
+
+/* ================= DISTANCE (HAVERSINE FORMULA) ================= */
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+</script>
+ 
+</body>
+</html>

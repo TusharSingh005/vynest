@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Owner Dashboard | VyNest</title>
+    <link rel="icon" type="image/png" href="/imgs/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .vynest-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .input-disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); transition: all 0.3s ease; }
+        .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid #e2e8f0; }
+    </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800">
+
+    <nav class="bg-white border-b px-4 md:px-8 py-3 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <a href="../../index.html"><img src="../../imgs/logo.png" alt="Vynest" class="h-10"></a>
+        </div>
+        <div class="flex items-center gap-3">
+            <button
+      onclick="openFeeModal()"
+      class="w-9 h-9 flex items-center justify-center
+             bg-gray-50 border rounded-full
+             hover:bg-gray-100 transition"
+      title="Booking Fee Sharing"
+    >
+      ℹ️
+    </button>
+            <div class="relative">
+                <button id="profileBtn" onclick="toggleProfileDropdown()" class="flex items-center gap-2 bg-gray-50 border rounded-full px-3 py-1.5 hover:bg-gray-100 transition focus:outline-none">
+                    <div id="userInitial" class="w-8 h-8 bg-[#6366f1] rounded-full flex items-center justify-center text-white font-bold text-sm uppercase">?</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M19 9l-7 7-7-7" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg overflow-hidden z-50">
+                    <a href="profile.html" class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition">👤 Profile</a>
+                    <button onclick="logout()" class="w-full text-left flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">🚪 Log out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+ <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <div class="flex flex-row justify-between items-center gap-2 mb-8">
+        
+        <div class="min-w-0"> <h1 class="text-lg sm:text-3xl font-extrabold text-[#1e293b] truncate">My Rooms</h1>
+            <p class="hidden xs:block text-[10px] sm:text-sm text-slate-500 font-medium">Your properties</p>
+        </div>
+
+        <div class="flex gap-1.5 sm:gap-3 shrink-0">
+            <a href="history.html">
+                <button class="bg-slate-100 text-slate-700 px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-bold border border-slate-200 hover:bg-slate-200 transition text-xs sm:text-base flex items-center gap-1">
+                    📜 <span class="hidden sm:inline">History</span>
+                </button>
+            </a>
+            
+            <button onclick="openAddModal()" class="vynest-gradient text-white px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-bold flex items-center justify-center gap-1 shadow-lg transition hover:scale-105 text-xs sm:text-base">
+                <span class="text-sm sm:text-xl">+</span> Add <span class="hidden sm:inline">Room</span>
+            </button>
+        </div>
+    </div>
+    
+    <div id="roomGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
+</main>
+
+    <div id="roomModal" class="fixed inset-0 bg-black/60 hidden flex justify-center items-center z-[100] p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-t-[2rem] sm:rounded-[2rem] w-full max-w-2xl max-h-[95vh] overflow-y-auto custom-scrollbar shadow-2xl">
+            <div class="p-5 sm:p-8 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                <h2 id="modalTitle" class="text-xl sm:text-2xl font-bold text-slate-800">List New Property</h2>
+                <button onclick="toggleModal()" class="text-slate-300 hover:text-slate-600 transition text-3xl font-light">&times;</button>
+            </div>
+            <form id="roomForm" class="p-5 sm:p-8 space-y-6">
+                <input type="hidden" id="editRoomId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input id="propName" required class="w-full bg-slate-50 border p-3 rounded-xl outline-none" placeholder="Property Name">
+                    <button type="button" id="gpsBtn" onclick="getGPS()" class="w-full bg-slate-100 border p-3 rounded-xl text-sm font-semibold hover:bg-slate-200 transition">📍 Track GPS Coordinates</button>
+                </div>
+                <input id="address" required class="w-full bg-slate-50 border p-3 rounded-xl outline-none" placeholder="Full Address">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <select id="propertyType" onchange="updateInventoryUI()" class="w-full bg-slate-50 border p-3 rounded-xl outline-none">
+                        <option value="pg_no_food">PG (No Food)</option>
+                        <option value="pg_with_food">PG (With Food)</option>
+                        <option value="hostel">Hostel</option>
+                        <option value="flat">Flat</option>
+                    </select>
+                    <select id="gender" class="w-full bg-slate-50 border p-3 rounded-xl outline-none">
+                        <option value="male">Boy</option>
+                        <option value="female">Girl</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+
+                <div id="furnishingBox" class="hidden p-4 bg-indigo-50 border border-indigo-100 rounded-2xl animate-fade-in">
+                    <label class="block text-sm font-bold text-indigo-700 mb-2">Furnishing Status</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 text-sm cursor-pointer font-medium">
+                            <input type="radio" name="furnishing" value="furnished" checked class="accent-indigo-600"> Furnished
+                        </label>
+                        <label class="flex items-center gap-2 text-sm cursor-pointer font-medium">
+                            <input type="radio" name="furnishing" value="semi-furnished" class="accent-indigo-600"> Semi-Furnished
+                        </label>
+                    </div>
+                </div>
+
+                <div id="inventoryContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+
+                <div class="p-4 bg-slate-50 rounded-2xl border space-y-3">
+                    <label class="block text-sm font-bold text-slate-700">Security Deposit</label>
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="securityDep" value="yes" onclick="toggleSecurityFee(true)"> Yes</label>
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="securityDep" value="no" onclick="toggleSecurityFee(false)" checked> No</label>
+                    </div>
+                    <div id="securityFeeContainer" class="hidden relative">
+                        <input type="number" id="securityFee" placeholder="Security Fee" class="w-full pl-6 pr-3 py-2 bg-white border rounded-lg text-sm outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Amenities</label>
+                    <div id="amenitiesContainer" class="flex flex-wrap gap-3 mb-3">
+                        <label class="flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition"><input type="checkbox" name="amenity" value="AC" class="accent-indigo-600"> AC</label>
+                        <label class="flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition"><input type="checkbox" name="amenity" value="RO Water" class="accent-indigo-600"> RO Water</label>
+                        <label class="flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition"><input type="checkbox" name="amenity" value="Washing Machine" class="accent-indigo-600"> Washing Machine</label>
+                        <label class="flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition"><input type="checkbox" name="amenity" value="Fridge" class="accent-indigo-600"> Fridge</label>
+                        <label class="flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition"><input type="checkbox" name="amenity" value="Attached Washroom" class="accent-indigo-600"> Attached Washroom</label>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="customAmenityInput" class="flex-1 bg-slate-50 border p-2 rounded-xl text-sm outline-none" placeholder="Add custom (e.g. Balcony)">
+                        <button type="button" onclick="addCustomAmenity()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 transition">Add +</button>
+                    </div>
+                </div>
+
+               <div>
+    <label class="block text-sm font-bold text-slate-700 mb-2">Upload Images</label>
+
+    <!-- Image Preview -->
+    <div id="imagePreviewContainer" class="flex flex-wrap gap-3 mb-3"></div>
+
+    <!-- File Input -->
+    <input 
+        type="file" 
+        id="fileInput" 
+        multiple 
+        accept="image/*" 
+        onchange="limitImages(this)"
+        class="block w-full text-sm text-slate-600
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-lg file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100 cursor-pointer"
+    >
+
+    <!-- Note -->
+    <p class="mt-2 text-sm text-indigo-600 font-medium">
+        ⚠ Please upload food menu photos if you selected the Food Facility. <br>
+       ⚠ Uploading room photos is compulsory. Make sure to include photos of the selected amenities.
+    </p>
+</div>
+
+                <textarea id="desc" class="w-full bg-slate-50 border p-4 rounded-2xl outline-none h-24 text-sm" placeholder="Description..."></textarea>
+                
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" id="submitBtn" class="flex-1 vynest-gradient text-white py-4 rounded-2xl font-bold shadow-lg transition hover:opacity-90">Post Room</button>
+                    <button type="button" onclick="toggleModal()" class="flex-1 bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold hover:bg-slate-200 transition">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<div
+  id="feeModal"
+  class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[100] p-4"
+>
+  <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden">
+
+    <div class="flex justify-between items-center px-6 py-4 border-b">
+      <h2 class="text-lg sm:text-xl font-bold text-slate-800">
+        💡 Booking Fee Sharing
+      </h2>
+      <button
+        onclick="closeFeeModal()"
+        class="text-2xl text-slate-400 hover:text-slate-600"
+      >
+        &times;
+      </button>
+    </div>
+
+    <div class="p-6 space-y-4">
+      <p class="text-sm text-slate-600">
+        Earnings are split <b>50% / 50%</b> between <b>VyNest</b> and <b>You</b>.
+      </p>
+      <p class="text-sm text-slate-600">
+        Example: If booking fee is <b>₹2,000</b>, you receive <b>₹1,000</b>.
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pt-4 text-center text-sm">
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">PG (No Food)</p>
+          <p class="text-indigo-600">₹1,000 → <span class="text-green-600">₹500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">PG (With Food)</p>
+          <p class="text-indigo-600">₹2,000 → <span class="text-green-600">₹1,000</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Hostel</p>
+          <p class="text-indigo-600">₹7,000 → <span class="text-green-600">₹3,500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 1BHK</p>
+          <p class="text-indigo-600">₹3,000 → <span class="text-green-600">₹1,500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 2BHK</p>
+          <p class="text-indigo-600">₹4,000 → <span class="text-green-600">₹2,000</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 3BHK</p>
+          <p class="text-indigo-600">₹5,000 → <span class="text-green-600">₹2,500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 4BHK</p>
+          <p class="text-indigo-600">₹5,000 → <span class="text-green-600">₹2,500</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[120]">
+
+  <div class="bg-white w-[90%] max-w-md p-8 rounded-2xl shadow-2xl text-center">
+
+    <div class="w-14 h-14 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center text-2xl">
+      🗑️
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-2">
+      Delete Room
+    </h2>
+
+    <p class="text-sm text-slate-500 mb-6">
+      Are you sure you want to delete this listing?  
+      This action cannot be undone.
+    </p>
+
+    <div class="flex gap-3">
+
+      <button onclick="closeDeleteModal()"
+        class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-semibold hover:bg-slate-200 transition">
+        Cancel
+      </button>
+
+      <button onclick="confirmDeleteRoom()"
+        class="flex-1 py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition">
+        Delete
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+            authDomain: "vynest-b58fa.firebaseapp.com",
+            projectId: "vynest-b58fa",
+            storageBucket: "vynest-b58fa.firebasestorage.app",
+            messagingSenderId: "503196958388",
+            appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const auth = getAuth(app);
+
+        let selectedFiles = [];
+        let coords = { lat: null, lng: null };
+        let currentRoomData = null;
+
+        window.toggleModal = () => document.getElementById('roomModal').classList.toggle('hidden');
+
+        window.logout = () => {
+            signOut(auth).then(() => { window.location.href = "../../index.html"; });
+        };
+
+        // CUSTOM AMENITY LOGIC
+        window.addCustomAmenity = () => {
+            const input = document.getElementById('customAmenityInput');
+            const container = document.getElementById('amenitiesContainer');
+            const val = input.value.trim();
+            if (val) {
+                const label = document.createElement('label');
+                label.className = "flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition";
+                label.innerHTML = `<input type="checkbox" name="amenity" value="${val}" checked class="accent-indigo-600"> ${val}`;
+                container.appendChild(label);
+                input.value = "";
+            }
+        };
+
+        const getUserProfile = async (uid) => {
+            const userRef = doc(db, "users", uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+                const name = userData.fullName || userData.name || "Owner";
+                document.getElementById('userInitial').innerText = name.charAt(0);
+                return name;
+            }
+            return "Anonymous";
+        };
+
+        const fetchRooms = (uid) => {
+            const roomGrid = document.getElementById("roomGrid");
+            const q = query(collection(db, "rooms"), where("ownerId", "==", uid), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                roomGrid.innerHTML = "";
+                if (snapshot.empty) {
+                    roomGrid.innerHTML = `<div class="col-span-full text-center py-20"><p class="text-slate-400 font-semibold text-lg">No rooms posted by you yet</p></div>`;
+                    return;
+                }
+                snapshot.forEach((docSnap) => {
+                    const room = docSnap.data();
+                    const id = docSnap.id;
+                    roomGrid.innerHTML += `
+                        <div class="bg-white rounded-[2rem] overflow-hidden shadow-md border">
+                            <img src="${room.imageUrls?.[0] || 'https://via.placeholder.com/400x300?text=Vynest+Property'}" class="h-48 w-full object-cover bg-slate-100">
+                            <div class="p-5">
+                                <h3 class="text-lg font-bold mb-1">${room.propertyName}</h3>
+                                <p class="text-xs text-slate-400 mb-4 truncate">${room.address}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
+                                    <div class="flex gap-4">
+                                        <button onclick="editRoom('${docSnap.id}')" class="text-indigo-500 font-bold">Edit</button>
+                                        <button onclick="deleteRoom('${docSnap.id}')" class="text-red-400 font-bold">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            });
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) { getUserProfile(user.uid); fetchRooms(user.uid); }
+            else { window.location.href = "../../login.html"; }
+        });
+
+        document.getElementById('roomForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.innerText = "Saving...";
+
+            try {
+                const ownerName = await getUserProfile(user.uid);
+                let imageUrls = currentRoomData?.imageUrls || [];
+                if(selectedFiles.length > 0) {
+                    imageUrls = [];
+                  const uploadPromises = selectedFiles.map(async (file) => {
+
+    const compressedFile = await compressImage(file); // compress first
+
+    const sRef = ref(storage, `rooms/${Date.now()}_${file.name}`);
+    const snap = await uploadBytes(sRef, compressedFile);
+
+    return await getDownloadURL(snap.ref);
+});
+imageUrls = await Promise.all(uploadPromises);
+                }
+
+                const roomDetails = [];
+                let totalBedsCount = 0;
+                let lowestPriceValue = Infinity;
+
+                document.querySelectorAll('[id^="avail-"]').forEach(check => {
+                    if (check.checked) {
+                        const label = check.id.replace('avail-', '');
+                        const fee = parseInt(document.getElementById(`fee-${label}`).value) || 0;
+                        const count = parseInt(document.getElementById(`qty-${label}`).innerText);
+                        roomDetails.push({ type: label, fee, availableUnits: count });
+                        totalBedsCount += count;
+                        if (fee > 0 && fee < lowestPriceValue) lowestPriceValue = fee;
+                    }
+                });
+
+                const payload = {
+                    propertyName: document.getElementById('propName').value,
+                    address: document.getElementById('address').value,
+                    propertyType: document.getElementById('propertyType').value,
+                    gender: document.getElementById('gender').value,
+                    description: document.getElementById('desc').value,
+                    amenities: Array.from(document.querySelectorAll('input[name="amenity"]:checked')).map(x => x.value),
+                    imageUrls,
+                    location: coords,
+                    totalBeds: totalBedsCount,
+                    lowestPrice: lowestPriceValue === Infinity ? 0 : lowestPriceValue,
+                    roomDetails,
+                    securityDeposit: document.querySelector('input[name="securityDep"]:checked').value === "yes",
+                    securityFee: parseInt(document.getElementById('securityFee').value) || 0,
+                    ownerId: user.uid,
+                    ownerName: ownerName,
+                    updatedAt: serverTimestamp()
+                };
+
+                // Save furnishing if Flat
+                if(payload.propertyType === 'flat') {
+                    payload.furnishingStatus = document.querySelector('input[name="furnishing"]:checked').value;
+                }
+
+                const editId = document.getElementById('editRoomId').value;
+                if(editId) { await updateDoc(doc(db, "rooms", editId), payload); }
+                else { payload.createdAt = serverTimestamp(); await addDoc(collection(db, "rooms"), payload); }
+
+                toggleModal();
+                e.target.reset();
+                updateInventoryUI();
+            } catch (err) { alert(err.message); }
+            btn.disabled = false; btn.innerText = "Post Room";
+        };
+
+        // Window exposed functions
+        window.openAddModal = () => {
+            document.getElementById('roomForm').reset();
+            document.getElementById('editRoomId').value = "";
+            document.getElementById('imagePreviewContainer').innerHTML = "";
+            document.getElementById('modalTitle').innerText = "List New Property";
+            document.getElementById('submitBtn').innerText = "Post Room";
+            selectedFiles = [];
+            currentRoomData = null;
+            updateInventoryUI();
+            toggleModal();
+        };
+
+         
+
+        // EDIT ROOM LOGIC
+        window.editRoom = async (id) => {
+            const docSnap = await getDoc(doc(db, "rooms", id));
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                currentRoomData = data;
+                
+                document.getElementById('editRoomId').value = id;
+                document.getElementById('modalTitle').innerText = "Edit Property";
+                document.getElementById('submitBtn').innerText = "Update Room";
+                
+                document.getElementById('propName').value = data.propertyName;
+                document.getElementById('address').value = data.address;
+                document.getElementById('propertyType').value = data.propertyType;
+                document.getElementById('gender').value = data.gender;
+                document.getElementById('desc').value = data.description || "";
+                
+                updateInventoryUI();
+
+                // Restore furnishing radio if Flat
+                if(data.propertyType === 'flat' && data.furnishingStatus) {
+                    const rad = document.querySelector(`input[name="furnishing"][value="${data.furnishingStatus}"]`);
+                    if(rad) rad.checked = true;
+                }
+                
+                data.roomDetails?.forEach(room => {
+                    const check = document.getElementById(`avail-${room.type}`);
+                    if (check) {
+                        check.checked = true;
+                        window.toggleRoomInputs(room.type);
+                        document.getElementById(`qty-${room.type}`).innerText = room.availableUnits;
+                        document.getElementById(`fee-${room.type}`).value = room.fee;
+                    }
+                });
+                
+                const isSec = data.securityDeposit ? "yes" : "no";
+                document.querySelector(`input[name="securityDep"][value="${isSec}"]`).checked = true;
+                window.toggleSecurityFee(data.securityDeposit);
+                if (data.securityDeposit) document.getElementById('securityFee').value = data.securityFee;
+                
+                document.querySelectorAll('input[name="amenity"]').forEach(input => input.checked = false);
+                data.amenities?.forEach(amen => {
+                    const existing = document.querySelector(`input[name="amenity"][value="${amen}"]`);
+                    if (existing) {
+                        existing.checked = true;
+                    } else {
+                        const label = document.createElement('label');
+                        label.className = "flex items-center gap-2 bg-white border px-3 py-1.5 rounded-xl text-sm cursor-pointer hover:bg-indigo-50 transition";
+                        label.innerHTML = `<input type="checkbox" name="amenity" value="${amen}" checked class="accent-indigo-600"> ${amen}`;
+                        document.getElementById('amenitiesContainer').appendChild(label);
+                    }
+                });
+                
+                const container = document.getElementById('imagePreviewContainer');
+                container.innerHTML = "";
+                data.imageUrls?.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = "preview-img";
+                    container.appendChild(img);
+                });
+                
+                if(data.location && data.location.lat) {
+                    coords = data.location;
+                    document.getElementById('gpsBtn').innerText = "📍 Coordinates Loaded";
+                    document.getElementById('gpsBtn').classList.add('bg-green-100', 'text-green-600');
+                }
+
+                toggleModal();
+            }
+        };
+
+        window.updateInventoryUI = () => {
+            const type = document.getElementById('propertyType').value;
+            const container = document.getElementById('inventoryContainer');
+            const furnishBox = document.getElementById('furnishingBox');
+
+            // Show Furnished option ONLY for flat
+            if(type === 'flat') furnishBox.classList.remove('hidden');
+            else furnishBox.classList.add('hidden');
+
+            const labels = type === 'flat' ? ['1bhk', '2bhk', '3bhk', '4bhk'] : ['private', 'double sharing', 'triple sharing', 'four sharing'];
+            container.innerHTML = labels.map(label => `
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="flex items-center gap-2 cursor-pointer font-bold text-sm">
+                            <input type="checkbox" id="avail-${label}" onchange="toggleRoomInputs('${label}')" class="accent-indigo-600">
+                            <span class="capitalize">${label}</span>
+                        </label>
+                        <div id="group-${label}" class="flex items-center gap-2 bg-white border rounded-lg p-1 input-disabled">
+                            <button type="button" onclick="changeQty('${label}', -1)" class="w-6 h-6">-</button>
+                            <span id="qty-${label}" class="w-6 text-center font-bold text-xs">0</span>
+                            <button type="button" onclick="changeQty('${label}', 1)" class="w-6 h-6">+</button>
+                        </div>
+                    </div>
+                    <div id="inputGroup-${label}" class="input-disabled">
+                        <input type="number" id="fee-${label}" placeholder="Price" class="w-full p-2 bg-white border rounded-lg text-sm outline-none">
+                    </div>
+                </div>`).join('');
+        };
+
+        window.toggleRoomInputs = (id) => {
+            const isChecked = document.getElementById(`avail-${id}`).checked;
+            const group = document.getElementById(`group-${id}`);
+            const inputGroup = document.getElementById(`inputGroup-${id}`);
+            if(group) group.classList.toggle('input-disabled', !isChecked);
+            if(inputGroup) inputGroup.classList.toggle('input-disabled', !isChecked);
+        };
+
+        window.changeQty = (id, delta) => {
+            const el = document.getElementById(`qty-${id}`);
+            el.innerText = Math.max(0, parseInt(el.innerText) + delta);
+        };
+
+        window.getGPS = () => {
+            navigator.geolocation.getCurrentPosition(p => {
+                coords = { lat: p.coords.latitude, lng: p.coords.longitude };
+                document.getElementById('gpsBtn').innerText = "📍 Captured";
+                document.getElementById('gpsBtn').classList.add('bg-green-100', 'text-green-600');
+            });
+        };
+
+        window.toggleSecurityFee = (show) => { document.getElementById('securityFeeContainer').classList.toggle('hidden', !show); };
+
+        document.getElementById('fileInput').onchange = (e) => {
+            selectedFiles = Array.from(e.target.files);
+            const container = document.getElementById('imagePreviewContainer');
+            container.innerHTML = "";
+            selectedFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = "preview-img";
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+        let deleteRoomId = null;
+
+window.deleteRoom = function(id) {
+    deleteRoomId = id;
+    document.getElementById("deleteModal").classList.remove("hidden");
+}
+
+window.closeDeleteModal = function() {
+    document.getElementById("deleteModal").classList.add("hidden");
+    deleteRoomId = null;
+}
+
+window.confirmDeleteRoom = async function() {
+
+    if(!deleteRoomId) return;
+
+    await deleteDoc(doc(db,"rooms",deleteRoomId));
+
+    closeDeleteModal();
+}
+
+        updateInventoryUI();
+    </script>
+
+    <script>
+        function toggleProfileDropdown() { document.getElementById("profileDropdown").classList.toggle("hidden"); }
+        function openFeeModal() { document.getElementById("feeModal").classList.remove("hidden"); }
+        function closeFeeModal() { document.getElementById("feeModal").classList.add("hidden"); }
+        
+        document.addEventListener("click", (e) => {
+            const btn = document.getElementById("profileBtn");
+            const dropdown = document.getElementById("profileDropdown");
+            if (btn && !btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add("hidden");
+        }); 
+        const compressImage = (file) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      img.src = e.target.result;
+    };
+
+    img.onload = () => {
+      const maxWidth = 1200;
+      const scale = maxWidth / img.width;
+
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+        resolve(new File([blob], file.name, { type: "image/jpeg" }));
+      }, "image/jpeg", 0.8);
+    };
+
+    reader.readAsDataURL(file);
+  });
+};
+    </script>
+</body>
+</html>
