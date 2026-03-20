@@ -771,7 +771,7 @@ const handleBooking = async () => {
     const selectedRoom = roomData.roomDetails[occupancyIndex];
 
     // 🔥 CALL BACKEND
-    const res = await fetch("http://localhost:3000/create-order", {
+    const res = await fetch("https://vynest-production.up.railway.app/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
