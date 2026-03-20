@@ -72,7 +72,7 @@ app.post("/webhook", async (req, res) => {
   try {
     const data = req.body;
 
-    if (data.type === "PAYMENT_SUCCESS_WEBHOOK") {
+   if (data.type === "PAYMENT_SUCCESS") {
 
       const orderId = data.data.order.order_id;
 
