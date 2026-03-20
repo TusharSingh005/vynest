@@ -104,3 +104,6 @@ app.post("/webhook", async (req, res) => {
 });
 
 app.listen(3000, () => console.log("Server running"));
+app.get("/", (req, res) => {
+  res.send("Server running 🚀");
+});
