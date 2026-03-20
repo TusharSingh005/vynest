@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Owner Profile | VyNest</title>
+<link rel="icon" type="image/png" href="/imgs/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .vynest-gradient-bg {
+      background: radial-gradient(circle at top right, #eef2ff, #f8fafc);
+    }
+
+    .premium-gradient {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+    }
+
+    .modal-animate {
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body class="vynest-gradient-bg min-h-screen text-slate-900">
+ 
+      <nav class="bg-white border-b px-4 md:px-8 py-3 flex justify-between items-center sticky top-0 z-50">
+  <!-- LOGO -->
+  <div class="flex items-center gap-2">
+    <a href="../../index.html "><img src="../../imgs/logo.png" alt="Vynest" class="h-10"></a>
+  </div>
+
+  <!-- RIGHT ACTIONS -->
+  <div class="flex items-center gap-3">
+
+    <!-- INFO BUTTON -->
+    <button
+      onclick="openFeeModal()"
+      class="w-9 h-9 flex items-center justify-center
+             bg-gray-50 border rounded-full
+             hover:bg-gray-100 transition"
+      title="Booking Fee Sharing"
+    >
+      ℹ️
+    </button>
+
+    <!-- PROFILE DROPDOWN -->
+    <div class="relative">
+      <button
+        id="profileBtn"
+        onclick="toggleProfileDropdown()"
+        class="flex items-center gap-2 bg-gray-50 border rounded-full px-3 py-1.5
+               hover:bg-gray-100 transition focus:outline-none"
+      >
+        <div class="w-8 h-8 bg-[#6366f1] rounded-full flex items-center justify-center text-white font-bold">
+          A
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M19 9l-7 7-7-7" stroke-width="2"/>
+        </svg>
+      </button>
+
+      <!-- DROPDOWN -->
+      <div
+        id="profileDropdown"
+        class="hidden absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg overflow-hidden z-50"
+      >
+        <a
+          href="profile.html"
+          class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition"
+        >
+          👤 Profile
+        </a>
+
+        <button
+          onclick="logout()"
+          class="w-full text-left flex items-center gap-2 px-4 py-3 text-sm
+                 text-red-600 hover:bg-red-50 transition"
+        >
+          🚪 Log out
+        </button>
+      </div>
+    </div>
+
+  </div>
+</nav>
+ 
+
+<main class="max-w-2xl mx-auto px-6 py-16">
+  
+  <div class="glass-effect rounded-[2rem] shadow-2xl shadow-indigo-100/50 overflow-hidden">
+    <div class="h-28 md:h-20 premium-gradient opacity-90"></div>
+
+    <div class="px-8 pb-10">
+      <div class="relative -mt-12 mb-6 flex justify-center">
+        <div id="profileAvatar"
+  class="w-24 h-24 md:w-20 md:h-20 rounded-3xl premium-gradient
+         flex items-center justify-center text-white
+         text-4xl md:text-3xl font-bold
+         border-4 border-white shadow-lg">
+          A
+        </div>
+      </div>
+
+      <div class="text-center mb-8 md:mb-5">
+        <h2 id="ownerName" class="text-2xl font-bold tracking-tight text-slate-900">Loading...</h2>
+        <p id="ownerEmail" class="text-slate-500 font-medium">---</p>
+        <div class="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wide">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Verified Partner
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4">
+        <div class="flex items-center justify-between p-4 md:p-3 rounded-2xl bg-slate-50/50 border border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-white rounded-lg shadow-sm text-indigo-500">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <span class="text-sm font-medium text-slate-600">Status</span>
+          </div>
+          <span class="text-sm font-bold text-slate-900">Active</span>
+        </div>
+
+        <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50/50 border border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-white rounded-lg shadow-sm text-indigo-500">
+              <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+            <span class="text-sm font-medium text-slate-600">Partner Since</span>
+          </div>
+          <span id="memberSince" class="text-sm font-bold text-slate-900">---</span>
+        </div>
+      </div>
+
+      <div class="mt-8 md:mt-6 pt-6 md:pt-4 border-t border-slate-100 text-center">
+        <p class="text-sm text-slate-500 mb-6 font-medium">Have questions about your properties?</p>
+        <button onclick="openSupportModal()" class="w-full sm:w-auto px-8 py-3 rounded-2xl premium-gradient text-white font-semibold hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2 mx-auto">
+          <i data-lucide="headphones" class="w-5 h-5"></i>
+          Contact & Support
+        </button>
+      </div>
+    </div>
+  </div>
+
+   
+</main>
+
+<div id="supportModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-[200] p-4">
+  <div class="bg-white w-full max-w-sm rounded-[2rem] p-8 text-center shadow-2xl modal-animate">
+    <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <i data-lucide="message-square" class="w-8 h-8"></i>
+    </div>
+    <h3 class="font-bold text-xl mb-2 text-slate-900">Priority Support</h3>
+    <p class="text-sm text-slate-500 mb-8">Our dedicated admin team is available 24/7 for our verified owners.</p>
+    
+    <div class="space-y-3">
+      <a href="tel:+917599741846" class="flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition font-medium">
+        <span class="text-slate-600">Call Us</span>
+        <span class="text-indigo-600">+91 7599741846</span>
+      </a>
+      <a href="mailto:admin@vynest.com" class="flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition font-medium">
+        <span class="text-slate-600">Email</span>
+        <span class="text-indigo-600">vynest750@gmail.com</span>
+      </a>
+    </div>
+    
+    <button onclick="closeSupportModal()" class="mt-8 w-full py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Dismiss</button>
+  </div>
+</div>
+<div
+  id="feeModal"
+  class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[100] p-4"
+>
+  <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center px-6 py-4 border-b">
+      <h2 class="text-lg sm:text-xl font-bold text-slate-800">
+        💡 Booking Fee Sharing
+      </h2>
+      <button
+        onclick="closeFeeModal()"
+        class="text-2xl text-slate-400 hover:text-slate-600"
+      >
+        &times;
+      </button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="p-6 space-y-4">
+      <p class="text-sm text-slate-600">
+        Earnings are split <b>50% / 50%</b> between <b>VyNest</b> and <b>You</b>.
+      </p>
+      <p class="text-sm text-slate-600">
+        Example: If booking fee is <b>₹2,000</b>, you receive <b>₹1,000</b>.
+      </p>
+
+      <!-- CARDS -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pt-4 text-center text-sm">
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">PG (No Food)</p>
+          <p class="text-indigo-600">₹1,000 → <span class="text-green-600">₹500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">PG (With Food)</p>
+          <p class="text-indigo-600">₹2,000 → <span class="text-green-600">₹1,000</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Hostel</p>
+          <p class="text-indigo-600">₹7,000 → <span class="text-green-600">₹3,500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 1BHK</p>
+          <p class="text-indigo-600">₹3,000 → <span class="text-green-600">₹1,500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 2BHK</p>
+          <p class="text-indigo-600">₹4,000 → <span class="text-green-600">₹2,000</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 3BHK</p>
+          <p class="text-indigo-600">₹5,000 → <span class="text-green-600">₹2,500</span></p>
+        </div>
+        <div class="border rounded-xl p-3">
+          <p class="font-semibold">Flat 4BHK</p>
+          <p class="text-indigo-600">₹5,000 → <span class="text-green-600">₹2,500</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+ <script type="module">
+  // Citing Source: firebasejs for authentication services
+  import { auth } from "./firebase-config.js";
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  // Initialize Lucide Icons
+  lucide.createIcons();
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "../../pages/login.html";
+      return;
+    }
+
+    // Workable Profile Data
+    const name = user.displayName || "Owner";
+    const email = user.email || "---";
+    const initial = (name || email || "A")[0].toUpperCase();
+
+    // Update UI Elements
+    document.getElementById('ownerName').innerText = name;
+    document.getElementById('ownerEmail').innerText = email;
+    document.getElementById('profileAvatar').innerText = initial;
+
+    // Fixed Nav Avatar Logic
+    const navAvatar = document.querySelector('#profileBtn div');
+    if (navAvatar) navAvatar.innerText = initial;
+
+    // WORKABLE: "Partner Since" logic using Firebase metadata
+    if (user.metadata && user.metadata.creationTime) {
+      const joinDate = new Date(user.metadata.creationTime);
+      document.getElementById('memberSince').innerText = joinDate.toLocaleDateString("en-IN", { 
+        month: "long", 
+        year: "numeric" 
+      });
+    } else {
+      document.getElementById('memberSince').innerText = "Recent Partner";
+    }
+  });
+
+  window.logout = async () => {
+    try {
+      await signOut(auth);
+      window.location.href = "../../index.html";
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+</script>
+<script>
+  // UI Interaction Logic
+  const profileDropdown = document.getElementById("profileDropdown");
+  const supportModal = document.getElementById("supportModal");
+  const feeModal = document.getElementById("feeModal");
+
+  function toggleProfileDropdown() {
+    profileDropdown.classList.toggle("hidden");
+  }
+
+  // Close dropdown when clicking outside
+  window.onclick = function(event) {
+    if (!event.target.closest('#profileBtn')) {
+      profileDropdown.classList.add("hidden");
+    }
+  }
+
+  function openSupportModal() { supportModal.classList.remove("hidden"); }
+  function closeSupportModal() { supportModal.classList.add("hidden"); }
+  
+  function openFeeModal() { feeModal.classList.remove("hidden"); }
+  function closeFeeModal() { feeModal.classList.add("hidden"); }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Processing Booking...</title>
+</head>
+
+<body style="font-family: sans-serif; text-align:center; padding:50px;">
+  
+  <h2>Processing your booking... ⏳</h2>
+  <p>Please wait, do not refresh.</p>
+
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+  authDomain: "vynest-b58fa.firebaseapp.com",
+  projectId: "vynest-b58fa",
+  storageBucket: "vynest-b58fa.firebasestorage.app",
+  messagingSenderId: "503196958388",
+  appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const saveBooking = async () => {
+  const data = JSON.parse(localStorage.getItem("pendingBooking"));
+
+  if (!data) {
+    window.location.href = "/index.html";
+    return;
+  }
+
+  try {
+    // 🔥 GET ROOM DATA
+    const roomRef = doc(db, "rooms", data.roomId);
+    const roomSnap = await getDoc(roomRef);
+
+    if (!roomSnap.exists()) return;
+
+    const roomData = roomSnap.data();
+    const selectedRoom = roomData.roomDetails[data.occupancyIndex];
+
+    // 🔥 SAVE BOOKING
+await addDoc(collection(db, "bookings"), {
+    userId: data.userId,
+    ownerId: roomData.ownerId,   // ✅ ADD THIS (CRITICAL)
+    roomId: data.roomId,
+    propertyName: roomData.propertyName,
+    roomType: selectedRoom.type,
+    moveInDate: data.moveInDate,
+    bookingAmount: data.amount,
+    roomPrice: data.roomPrice,
+    status: "confirmed",
+    createdAt: serverTimestamp()
+});
+
+    // 🔥 REDUCE ROOM AVAILABILITY
+    const updatedRooms = roomData.roomDetails;
+    if (updatedRooms[data.occupancyIndex].availableUnits > 0) {
+    updatedRooms[data.occupancyIndex].availableUnits -= 1;
+}
+
+    await updateDoc(roomRef, {
+      roomDetails: updatedRooms
+    });
+
+    // 🧹 CLEAR STORAGE
+    localStorage.removeItem("pendingBooking");
+
+    // 🚀 REDIRECT
+    window.location.href = "/dashboards/student/index.html?booking=success";
+
+  } catch (err) {
+    console.error("Booking Error:", err);
+  }
+};
+
+const verifyAndSave = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get("order_id");
+
+  if (!orderId) {
+    alert("Invalid payment.");
+    window.location.href = "/";
+    return;
+  }
+
+  const res = await fetch(`/verify-payment/${orderId}`);
+  const result = await res.json();
+
+  if (!result.success) {
+    alert("Payment not completed.");
+    localStorage.removeItem("pendingBooking");
+    window.location.href = "/";
+    return;
+  }
+
+  // ✅ NOW SAFE TO SAVE BOOKING
+  saveBooking();
+};
+
+verifyAndSave();
+</script>
+
+</body>
+</html>

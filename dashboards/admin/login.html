@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Login | Vynest</title>
+<link rel="icon" type="image/png" href="/imgs/favicon.ico">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+
+body{
+font-family:'Inter',sans-serif;
+background:linear-gradient(rgba(15,23,42,0.85),rgba(15,23,42,0.85)),
+url('https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1600&q=80');
+background-size:cover;
+background-position:center;
+}
+
+</style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center px-4">
+
+<div class="w-full max-w-md bg-white rounded-[2rem] shadow-2xl p-10">
+
+<div class="text-center mb-8">
+<a href="../../index.html">
+<img src="../../imgs/logo.png" class="h-10 mx-auto mb-4">
+</a>
+<h1 class="text-2xl font-black text-slate-900">
+Admin Panel Login
+</h1>
+
+<p class="text-slate-400 text-sm mt-2">
+Restricted access for administrators only
+</p>
+
+</div>
+
+<form id="adminLoginForm" class="space-y-6">
+
+<div>
+
+<label class="text-xs font-bold text-indigo-600 uppercase tracking-widest">
+Admin Email
+</label>
+
+<input
+type="email"
+id="adminEmail"
+required
+placeholder="email@gmail.com"
+class="w-full mt-2 bg-slate-50 border rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-4 focus:ring-indigo-500/10">
+
+</div>
+
+ <div>
+
+<label class="text-xs font-bold text-indigo-600 uppercase tracking-widest">
+Password
+</label>
+
+<div class="relative mt-2">
+
+<input
+type="password"
+id="adminPassword"
+required
+placeholder="••••••••"
+class="w-full bg-slate-50 border rounded-xl px-4 pr-12 py-3 text-sm font-semibold focus:outline-none focus:ring-4 focus:ring-indigo-500/10">
+
+<button
+type="button"
+id="togglePassword"
+class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition">
+
+<i class="fa-solid fa-eye"></i>
+
+</button>
+
+</div>
+
+</div>
+
+<button
+type="submit"
+id="adminLoginBtn"
+class="w-full bg-indigo-600 text-white py-4 rounded-xl font-black hover:bg-indigo-700 transition">
+
+LOGIN TO ADMIN PANEL
+
+</button>
+
+</form>
+
+<p class="text-center text-xs text-slate-400 mt-6">
+Vynest Secure Admin Access
+</p>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+getFirestore,
+doc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+authDomain: "vynest-b58fa.firebaseapp.com",
+projectId: "vynest-b58fa",
+storageBucket: "vynest-b58fa.firebasestorage.app",
+messagingSenderId: "503196958388",
+appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+const form = document.getElementById("adminLoginForm");
+
+form.addEventListener("submit", async(e)=>{
+
+e.preventDefault();
+
+const email = document.getElementById("adminEmail").value.trim().toLowerCase();
+const password = document.getElementById("adminPassword").value;
+
+if(email !== "admin@gmail.com"){
+
+alert("Only admin accounts can login here.");
+return;
+
+}
+
+try{
+
+const cred = await signInWithEmailAndPassword(auth,email,password);
+
+const user = cred.user;
+
+const snap = await getDoc(doc(db,"users",user.uid));
+
+if(!snap.exists()){
+
+alert("Admin profile not found.");
+return;
+
+}
+
+const data = snap.data();
+
+if(data.role !== "admin"){
+
+alert("Access denied.");
+return;
+
+}
+
+window.location.href = "./index.html";
+
+}
+catch(err){
+
+alert("Login failed.");
+
+}
+
+});
+
+</script>
+<script>
+    const passwordInput = document.getElementById("adminPassword");
+const togglePassword = document.getElementById("togglePassword");
+
+togglePassword.addEventListener("click",()=>{
+
+const icon = togglePassword.querySelector("i");
+
+const isHidden = passwordInput.type === "password";
+
+passwordInput.type = isHidden ? "text" : "password";
+
+icon.classList.toggle("fa-eye");
+icon.classList.toggle("fa-eye-slash");
+
+});
+</script>
+</body>
+</html>
