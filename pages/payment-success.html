@@ -11,9 +11,7 @@
   <p id="statusText">Please wait, do not refresh.</p>
 
  <script type="module">
-const BACKEND_BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? "http://localhost:3000"
-  : "https://vynest-backend.pages.dev";
+const BACKEND_BASE_URL = "https://vynest-backend.vynest750.workers.dev";
 
 const verifyAndSave = async () => {
   const urlParams = new URLSearchParams(window.location.search);

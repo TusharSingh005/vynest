@@ -469,9 +469,7 @@ let currentSlide = 0;
 let roomData = null;
 let currentUser = null;
 let userRole = null;
-const BACKEND_BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? "http://localhost:3000"
-  : "https://vynest-backend.pages.dev";
+const BACKEND_BASE_URL = "https://vynest-backend.vynest750.workers.dev";
 
 /* ================= SUCCESS MODAL ================= */
 
@@ -807,8 +805,14 @@ const handleBooking = async () => {
 
     const data = await res.json();
 
-    // 🔥 OPEN CASHFREE CHECKOUT
-    const cashfree = Cashfree({ mode: "sandbox" }); // change to production later
+    if (!res.ok || !data?.payment_session_id) {
+      console.error("Create-order failed", data);
+      alert(data?.error || "Unable to start payment. Please try again.");
+      return;
+    }
+
+    // Backend uses production Cashfree order API, so checkout must also use production mode.
+    const cashfree = Cashfree({ mode: "production" });
 
     await cashfree.checkout({
         paymentSessionId: data.payment_session_id,
