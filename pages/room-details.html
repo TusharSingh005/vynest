@@ -469,6 +469,9 @@ let currentSlide = 0;
 let roomData = null;
 let currentUser = null;
 let userRole = null;
+const BACKEND_BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "http://localhost:3000"
+  : "https://vynest-backend.pages.dev";
 
 /* ================= SUCCESS MODAL ================= */
 
@@ -787,7 +790,7 @@ const handleBooking = async () => {
     const selectedRoom = roomData.roomDetails[occupancyIndex];
 
     // 🔥 CALL BACKEND
-    const res = await fetch("https://vynest-production.up.railway.app/create-order", {
+    const res = await fetch(`${BACKEND_BASE_URL}/create-order`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
