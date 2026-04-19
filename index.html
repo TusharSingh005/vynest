@@ -1652,49 +1652,55 @@
           const badgeClass = isAvailable ? "bg-black/60" : "bg-red-600";
           const badgeText = isAvailable ? `${bedsLeft} Beds Left` : "Sold Out";
 
-          grid.innerHTML += `
-      <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 group relative">
-        <div class="absolute top-4 left-4 ${badgeClass} backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg z-10">
-            ${badgeText}
+         grid.innerHTML += `
+<a href="/pages/room-details.html?id=${room.id}" 
+   class="block group">
+
+  <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 relative">
+
+    <div class="absolute top-4 left-4 ${badgeClass} backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg z-10">
+        ${badgeText}
+    </div>
+
+    <div class="h-52 overflow-hidden">
+      <img src="${room.imageUrls?.[0] || "https://via.placeholder.com/400x300"}" 
+           class="w-full h-full object-cover group-hover:scale-110 transition duration-500 ${!isAvailable ? "grayscale" : ""}">
+    </div>
+
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-bold text-slate-800 truncate pr-2">${room.propertyName}</h3>
+        <div class="flex gap-1 shrink-0">
+          <span class="${pStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
+            ${room.propertyType.replace(/_/g, " ")}
+          </span>
+          <span class="${gStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
+            ${room.gender === "male" ? "boy" : room.gender === "female" ? "girl" : "unisex"}
+          </span>
+        </div>
+      </div>
+
+      <p class="text-slate-400 text-xs mb-4 flex items-center gap-1 truncate">
+        📍 ${room.address || ""}
+      </p>
+
+      <div class="flex justify-between items-center pt-2 border-t border-slate-50">
+        <div>
+          <span class="text-xs text-slate-400 block leading-none">Starting from</span>
+          <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
+          <span class="text-[10px] text-slate-400">/mo</span>
         </div>
 
-        <div class="h-52 overflow-hidden">
-          <img src="${room.imageUrls?.[0] || "https://via.placeholder.com/400x300"}" 
-               class="w-full h-full object-cover group-hover:scale-110 transition duration-500 ${!isAvailable ? "grayscale" : ""}">
-        </div>
+        <!-- Optional: keep button for visual cue -->
+        <span class="${isAvailable ? "bg-indigo-600" : "bg-slate-400"} text-white px-4 py-2 rounded-xl text-xs font-bold">
+          ${isAvailable ? "View Details" : "Full"}
+        </span>
+      </div>
+    </div>
 
-        <div class="p-6">
-          <div class="flex justify-between items-start mb-2">
-            <h3 class="text-lg font-bold text-slate-800 truncate pr-2">${room.propertyName}</h3>
-            <div class="flex gap-1 shrink-0">
-              <span class="${pStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
-                ${room.propertyType.replace(/_/g, " ")}
-              </span>
-              <span class="${gStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
-                ${room.gender === "male" ? "boy" : room.gender === "female" ? "girl" : "unisex"}
-              </span>
-            </div>
-          </div>
-
-          <p class="text-slate-400 text-xs mb-4 flex items-center gap-1 truncate">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            ${room.address || ""}
-          </p>
-
-          <div class="flex justify-between items-center pt-2 border-t border-slate-50">
-            <div>
-              <span class="text-xs text-slate-400 block leading-none">Starting from</span>
-              <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
-              <span class="text-[10px] text-slate-400">/mo</span>
-            </div>
-
-            <a href="/pages/room-details.html?id=${room.id}" 
-               class="${isAvailable ? "bg-indigo-600 hover:bg-indigo-700" : "bg-slate-400 cursor-not-allowed"} text-white px-4 py-2 rounded-xl text-xs font-bold transition">
-              ${isAvailable ? "View Details" : "Full"}
-            </a>
-          </div>
-        </div>
-      </div>`;
+  </div>
+</a>
+`;
         });
       }
       /* ================= FETCH ROOMS ================= */
