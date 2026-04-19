@@ -181,24 +181,25 @@
           />
 
           <div class="grid grid-cols-2 gap-4">
-            <select
-              id="propertyType"
-              onchange="updateInventoryUI()"
-              class="w-full bg-slate-50 border p-3 rounded-xl outline-none"
-            >
-              <option value="pg_no_food">PG (No Food)</option>
-              <option value="pg_with_food">PG (With Food)</option>
-              <option value="hostel">Hostel</option>
-              <option value="flat">Flat</option>
-            </select>
-            <select
-              id="gender"
-              class="w-full bg-slate-50 border p-3 rounded-xl outline-none"
-            >
-              <option value="male">Boy</option>
-              <option value="female">Girl</option>
-              <option value="unisex">Unisex</option>
-            </select>
+             <select id="propertyType" onchange="updateInventoryUI()" required
+  class="w-full bg-slate-50 border p-3 rounded-xl outline-none">
+
+  <option value="" disabled selected>Select Property Type</option>
+  <option value="pg_no_food">PG (No Food)</option>
+  <option value="pg_with_food">PG (With Food)</option>
+  <option value="hostel">Hostel</option>
+  <option value="flat">Flat</option>
+
+</select>
+            <select id="gender" required
+  class="w-full bg-slate-50 border p-3 rounded-xl outline-none">
+
+  <option value="" disabled selected>Select Gender</option>
+  <option value="male">Boy</option>
+  <option value="female">Girl</option>
+  <option value="unisex">Unisex</option>
+
+</select>
           </div>
 
           <div
@@ -788,7 +789,7 @@
         const type = document.getElementById("propertyType").value;
         const container = document.getElementById("inventoryContainer");
         const furnishBox = document.getElementById("furnishingBox");
-
+          if (!type) return;
         // Show Furnished option ONLY for flat
         if (type === "flat") furnishBox.classList.remove("hidden");
         else furnishBox.classList.add("hidden");
