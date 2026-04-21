@@ -195,7 +195,6 @@
         collection,
         where,
         getDocs,
-        orderBy,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
       const firebaseConfig = {
@@ -283,9 +282,15 @@
               ...bookingDoc.data(),
             }))
             .sort((a, b) => {
-              const aTime = a.createdAt?.seconds || a.createdAt?.toMillis?.() / 1000 || 0;
-              const bTime = b.createdAt?.seconds || b.createdAt?.toMillis?.() / 1000 || 0;
-              return bTime - aTime;
+              const aMillis =
+                typeof a.createdAt?.toMillis === "function"
+                  ? a.createdAt.toMillis()
+                  : (a.createdAt?.seconds || 0) * 1000;
+              const bMillis =
+                typeof b.createdAt?.toMillis === "function"
+                  ? b.createdAt.toMillis()
+                  : (b.createdAt?.seconds || 0) * 1000;
+              return bMillis - aMillis;
             });
 
           for (const booking of bookings) {
@@ -327,10 +332,13 @@
 
             const bookingDate = booking.createdAt
               ? new Date(
-                  booking.createdAt.seconds
-                    ? booking.createdAt.seconds * 1000
-                    : booking.createdAt.toMillis(),
-                ).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })
+                  typeof booking.createdAt.toMillis === "function"
+                    ? booking.createdAt.toMillis()
+                    : booking.createdAt.seconds * 1000,
+                ).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                })
               : "N/A";
 
             const cardHtml = `
