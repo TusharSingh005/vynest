@@ -32,14 +32,12 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* This ensures Tailwind's font-sans also uses Inter if you use that class */
 .font-sans {
     font-family: 'Inter', sans-serif;
 }
     html {
         scroll-behavior: smooth;
     }
-    /* Smooth slide animation for the right-side drawer */
     #mobile-menu {
         transition: transform 0.3s ease-in-out;
     }
@@ -843,9 +841,12 @@ const isAvailable=bedsLeft>0;
 const badgeClass=isAvailable ? "bg-black/60":"bg-red-600";
 const badgeText=isAvailable ? bedsLeft+" Beds Left":"Sold Out";
 
-grid.innerHTML+=`
+ grid.innerHTML+=`
 
-<div class="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 group relative">
+<a href="room-details.html?id=${room.id}" 
+   class="block group cursor-pointer">
+
+<div class="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 relative">
 
 <div class="absolute top-4 left-4 ${badgeClass} backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg z-10">
 ${badgeText}
@@ -886,19 +887,19 @@ ${room.gender}
 <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
 </div>
 
-<a href="room-details.html?id=${room.id}"
-class="${isAvailable?'bg-indigo-600 hover:bg-indigo-700':'bg-slate-400'} text-white px-4 py-2 rounded-xl text-xs font-bold">
+<!-- visual button only -->
+<span class="${isAvailable?'bg-indigo-600':'bg-slate-400'} text-white px-4 py-2 rounded-xl text-xs font-bold">
 ${isAvailable?'View Details':'Full'}
+</span>
+
+</div>
+
+</div>
+
+</div>
+
 </a>
-
-</div>
-
-</div>
-
-</div>
-
 `;
-
 });
 
 }
