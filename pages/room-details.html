@@ -17,7 +17,23 @@
   gtag('js', new Date());
 
   gtag('config', 'G-4XE9WCW7ZB');
+ 
+  const getStoredUserRole = () => {
+    return localStorage.getItem("userRole") || "";
+  };
+
+  const ensureStudentAccess = () => {
+    const role = getStoredUserRole();
+
+    if (role === "owner" || role === "admin") {
+      window.location.href = "login.html";
+      return false;
+    }
+
+    return true;
+  };
 </script>
+
     <style>
         body {
     font-family: 'Inter', sans-serif;
@@ -771,7 +787,7 @@ const handleBooking = async () => {
     const selectedRoom = roomData.roomDetails[occupancyIndex];
 
     // 🔥 CALL BACKEND
-    const res = await fetch("https://vynest-production.up.railway.app/", {
+    const res = await fetch("https://vynest-production.up.railway.app/create-order", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
