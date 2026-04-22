@@ -209,6 +209,35 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
+      const BACKEND_BASE_URL = "https://vynest-backend.vynest750.workers.dev";
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      async function reconcileOrderBooking(orderId) {
+        if (!orderId) {
+          return false;
+        }
+
+        const maxAttempts = 10;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+          try {
+            const response = await fetch(
+              `${BACKEND_BASE_URL}/verify-payment/${encodeURIComponent(orderId)}`,
+            );
+            const result = await response.json();
+
+            if (result?.success) {
+              return true;
+            }
+          } catch (error) {
+            console.error("Order reconciliation failed", error);
+          }
+
+          await sleep(1500);
+        }
+
+        return false;
+      }
 
       const allowStudentView = async (user) => {
         const userSnap = await getDoc(doc(db, "users", user.uid));
@@ -252,6 +281,16 @@
           studentNameEl.innerText = userSnap.exists()
             ? `Hi, ${userSnap.data().fullName}! 👋`
             : `Hi, Nest User! 👋`;
+
+          const orderId = new URLSearchParams(window.location.search).get(
+            "order_id",
+          );
+
+          if (orderId) {
+            await reconcileOrderBooking(orderId);
+            const cleanUrl = `${window.location.pathname}?booking=success`;
+            window.history.replaceState({}, "", cleanUrl);
+          }
 
           loadAllBookings(user.uid);
         } catch (error) {
