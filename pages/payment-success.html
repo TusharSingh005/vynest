@@ -24,18 +24,32 @@ const verifyAndSave = async () => {
   }
 
   const statusText = document.getElementById("statusText");
-  const maxAttempts = 10;
+  const maxAttempts = 15;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     statusText.innerText = `Verifying payment... (${attempt}/${maxAttempts})`;
 
-    const res = await fetch(`${BACKEND_BASE_URL}/verify-payment/${orderId}`);
-    const result = await res.json();
+    let result = null;
+
+    try {
+      const res = await fetch(`${BACKEND_BASE_URL}/verify-payment/${orderId}`);
+      result = await res.json();
+    } catch (error) {
+      console.error("Verify payment failed", error);
+      result = { success: false, status: "NETWORK_ERROR" };
+    }
 
     if (result.success) {
-      statusText.innerText = "Payment confirmed. Redirecting...";
-      window.location.href = "/dashboards/student/index.html?booking=success";
+      statusText.innerText = "Payment confirmed. Redirecting to dashboard in 3 seconds...";
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      window.location.href = `/dashboards/student/index.html?booking=success&order_id=${encodeURIComponent(orderId)}`;
       return;
+    }
+
+    if (result.status === "PAID_BOOKING_PENDING") {
+      statusText.innerText = `Payment confirmed. Finalizing booking... (${attempt}/${maxAttempts})`;
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      continue;
     }
 
     await new Promise(resolve => setTimeout(resolve, 2000));
