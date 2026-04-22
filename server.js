@@ -113,7 +113,7 @@ app.post("/create-order", async (req, res) => {
         order_currency: "INR",
         customer_details: {
           customer_id: userId,
-          customer_phone: "+91 70543 64074"
+          customer_phone: "+91 7054364074"
         }
       },
       {
