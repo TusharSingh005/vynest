@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications | VyNest</title>
+    <link rel="icon" type="image/png" href="/imgs/favicon.ico" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .notif-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #ef4444;
+        display: inline-block;
+      }
+      .notif-dot-blink {
+        animation: notifBlink 1s infinite;
+      }
+      @keyframes notifBlink {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.85);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <nav class="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 py-3 shadow-sm">
+      <div class="max-w-5xl mx-auto flex items-center justify-between">
+        <a href="../../index.html" class="flex items-center">
+          <img src="/imgs/logo.png" class="h-8 md:h-9" alt="VyNest Logo" />
+        </a>
+        <a
+          href="./index.html"
+          class="text-sm font-bold text-indigo-600 hover:text-indigo-700"
+        >
+          <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
+        </a>
+      </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+      <h1 class="text-3xl font-black mb-2">All Notifications</h1>
+      <p class="text-sm text-slate-500 mb-8">Latest updates are shown first.</p>
+
+      <div
+        id="allNotificationsContainer"
+        class="bg-white rounded-3xl border border-slate-100 shadow-sm divide-y divide-slate-100"
+      >
+        <div class="p-6 text-sm text-slate-500">Loading notifications...</div>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+      import {
+        getFirestore,
+        query,
+        collection,
+        where,
+        onSnapshot,
+        limit,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+        authDomain: "vynest-b58fa.firebaseapp.com",
+        projectId: "vynest-b58fa",
+        storageBucket: "vynest-b58fa.firebasestorage.app",
+        messagingSenderId: "503196958388",
+        appId: "1:503196958388:web:b78d771ddbd8dbf56161e1",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const NEW_NOTIFICATION_WINDOW_MS = 12 * 60 * 60 * 1000;
+      let notificationUnsubscribers = [];
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function toMillis(timestamp) {
+        return typeof timestamp?.toMillis === "function"
+          ? timestamp.toMillis()
+          : (timestamp?.seconds || 0) * 1000;
+      }
+
+      function formatNotificationTime(timestamp) {
+        if (!timestamp) {
+          return "Just now";
+        }
+
+        return new Date(toMillis(timestamp)).toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function isFreshNotification(notification) {
+        if (!notification?.createdAt) {
+          return false;
+        }
+
+        return Date.now() - toMillis(notification.createdAt) <= NEW_NOTIFICATION_WINDOW_MS;
+      }
+
+      function mergeSnapshotsById(snapshotArrays) {
+        const mergedMap = new Map();
+
+        snapshotArrays.forEach((snapshot) => {
+          snapshot.forEach((docSnap) => {
+            mergedMap.set(docSnap.id, {
+              id: docSnap.id,
+              ...docSnap.data(),
+            });
+          });
+        });
+
+        return Array.from(mergedMap.values()).sort((a, b) => {
+          const aMillis = toMillis(a.createdAt);
+          const bMillis = toMillis(b.createdAt);
+          return bMillis - aMillis;
+        });
+      }
+
+      function renderNotifications(items) {
+        const container = document.getElementById("allNotificationsContainer");
+
+        if (!items.length) {
+          container.innerHTML = '<div class="p-6 text-sm text-slate-500">No notifications found.</div>';
+          return;
+        }
+
+        container.innerHTML = items
+          .map((notification, index) => {
+            const showDot = index === 0 && isFreshNotification(notification);
+
+            return `
+              <div class="p-5">
+                <p class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                  ${escapeHtml(notification.title || "Notification")}
+                  ${showDot ? '<span class="notif-dot notif-dot-blink"></span>' : ""}
+                </p>
+                <p class="text-sm text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
+                <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(formatNotificationTime(notification.createdAt))}</p>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function startNotificationFeed(uid) {
+        notificationUnsubscribers.forEach((unsub) => unsub());
+        notificationUnsubscribers = [];
+
+        const snapshots = { direct: null, role: null };
+
+        const maybeRender = () => {
+          if (!snapshots.direct || !snapshots.role) {
+            return;
+          }
+
+          const merged = mergeSnapshotsById([snapshots.direct, snapshots.role]);
+          renderNotifications(merged);
+        };
+
+        const directQuery = query(
+          collection(db, "notifications"),
+          where("targetIds", "array-contains", uid),
+          limit(100),
+        );
+
+        const roleQuery = query(
+          collection(db, "notifications"),
+          where("targetRoles", "array-contains", "student"),
+          limit(100),
+        );
+
+        notificationUnsubscribers.push(
+          onSnapshot(directQuery, (snapshot) => {
+            snapshots.direct = snapshot;
+            maybeRender();
+          }),
+        );
+
+        notificationUnsubscribers.push(
+          onSnapshot(roleQuery, (snapshot) => {
+            snapshots.role = snapshot;
+            maybeRender();
+          }),
+        );
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.href = "/pages/login.html";
+          return;
+        }
+
+        startNotificationFeed(user.uid);
+      });
+    </script>
+  </body>
+</html>

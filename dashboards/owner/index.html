@@ -667,14 +667,12 @@
         const directQuery = query(
           collection(db, "notifications"),
           where("targetIds", "array-contains", uid),
-          orderBy("createdAt", "desc"),
           limit(20),
         );
 
         const roleQuery = query(
           collection(db, "notifications"),
           where("targetRoles", "array-contains", "owner"),
-          orderBy("createdAt", "desc"),
           limit(20),
         );
 

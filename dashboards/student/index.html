@@ -49,6 +49,29 @@
           opacity: 1;
         }
       }
+      .notif-dot {
+        position: relative;
+        margin-right: -3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #ef4444;
+        display: inline-block;
+      }
+      .notif-dot-blink {
+        animation: notifBlink 1s infinite;
+      }
+      @keyframes notifBlink {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.85);
+        }
+      }
     </style>
   </head>
 
@@ -61,7 +84,44 @@
           <img src="/imgs/logo.png" class="h-8 md:h-9" alt="VyNest Logo" />
         </a>
 
-        <div class="relative" id="profileWrapper">
+        <div class="flex items-center gap-2">
+          <div class="relative" id="bellWrapper">
+            <button
+              id="bellBtn"
+              onclick="toggleBellDropdown()"
+              class="relative w-10 h-10 flex items-center justify-center bg-slate-50 border border-slate-200 rounded-full hover:bg-slate-100 transition"
+            >
+              <i class="fa-solid fa-bell text-slate-600"></i>
+              <span
+                id="navBellDot"
+                class="hidden absolute top-2 right-2 notif-dot notif-dot-blink"
+              ></span>
+            </button>
+
+            <div
+              id="bellDropdown"
+              class="hidden absolute right-0 mt-3 w-[22rem] bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden z-50 modal-animate"
+            >
+              <div class="px-4 py-3 border-b bg-slate-50/70">
+                <p class="text-xs font-black text-slate-700 uppercase tracking-widest">
+                  Notifications
+                </p>
+              </div>
+              <div id="bellNotificationsContainer" class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                <div class="p-4 text-sm text-slate-500">Loading notifications...</div>
+              </div>
+              <div class="p-3 border-t bg-white">
+                <a
+                  href="./notifications.html"
+                  class="block w-full text-center text-sm font-bold text-indigo-600 hover:text-indigo-700"
+                >
+                  View all notifications
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative" id="profileWrapper">
           <button
             id="profileBtn"
             onclick="toggleProfileDropdown()"
@@ -136,16 +196,22 @@
         Loading your profile...
       </h1>
 
-      <section class="mb-10">
+      <section class="mb-10 max-w-3xl">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-black flex items-center gap-2">
             <i class="fa-solid fa-bell text-amber-500"></i>
             Notifications
           </h2>
+          <a
+            href="./notifications.html"
+            class="text-sm font-bold text-indigo-600 hover:text-indigo-700"
+          >
+            View all
+          </a>
         </div>
         <div
           id="studentNotificationsContainer"
-          class="bg-white rounded-[2rem] border border-slate-100 shadow-sm divide-y divide-slate-100"
+          class="bg-white rounded-3xl border border-slate-100 shadow-sm divide-y divide-slate-100"
         >
           <div class="p-6 text-sm text-slate-500">Loading notifications...</div>
         </div>
@@ -210,7 +276,6 @@
         collection,
         where,
         onSnapshot,
-        orderBy,
         limit,
         getDocs,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -230,6 +295,7 @@
       const BACKEND_BASE_URL = "https://vynest-backend.vynest750.workers.dev";
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       let notificationUnsubscribers = [];
+      const NEW_NOTIFICATION_WINDOW_MS = 12 * 60 * 60 * 1000;
 
       function escapeHtml(value) {
         return String(value || "")
@@ -265,6 +331,72 @@
         });
       }
 
+      function toMillis(timestamp) {
+        return typeof timestamp?.toMillis === "function"
+          ? timestamp.toMillis()
+          : (timestamp?.seconds || 0) * 1000;
+      }
+
+      function formatNotificationTime(timestamp) {
+        if (!timestamp) {
+          return "Just now";
+        }
+
+        return new Date(toMillis(timestamp)).toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function isFreshNotification(notification) {
+        if (!notification?.createdAt) {
+          return false;
+        }
+
+        return Date.now() - toMillis(notification.createdAt) <= NEW_NOTIFICATION_WINDOW_MS;
+      }
+
+      function updateBellIndicator(notifications) {
+        const navDot = document.getElementById("navBellDot");
+
+        if (!notifications.length || !isFreshNotification(notifications[0])) {
+          navDot.classList.add("hidden");
+          return;
+        }
+
+        navDot.classList.remove("hidden");
+      }
+
+      function renderBellNotifications(items) {
+        const container = document.getElementById("bellNotificationsContainer");
+
+        if (!items.length) {
+          container.innerHTML =
+            '<div class="p-4 text-sm text-slate-500">No notifications yet.</div>';
+          return;
+        }
+
+        container.innerHTML = items
+          .slice(0, 6)
+          .map((notification, index) => {
+            const showDot = index === 0 && isFreshNotification(notification);
+
+            return `
+            <div class="p-4">
+              <p class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                ${escapeHtml(notification.title || "Notification")}
+                ${showDot ? '<span class="notif-dot notif-dot-blink"></span>' : ""}
+              </p>
+              <p class="text-xs text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
+              <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(formatNotificationTime(notification.createdAt))}</p>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
       function renderStudentNotifications(items) {
         const container = document.getElementById("studentNotificationsContainer");
 
@@ -275,21 +407,18 @@
         }
 
         container.innerHTML = items
-          .slice(0, 20)
-          .map((notification) => {
-            const createdAt = notification.createdAt
-              ? new Date(
-                  typeof notification.createdAt.toMillis === "function"
-                    ? notification.createdAt.toMillis()
-                    : (notification.createdAt?.seconds || 0) * 1000,
-                ).toLocaleString("en-IN")
-              : "Just now";
+          .slice(0, 2)
+          .map((notification, index) => {
+            const showDot = index === 0 && isFreshNotification(notification);
 
             return `
-            <div class="p-5">
-              <p class="text-sm font-extrabold text-slate-800">${escapeHtml(notification.title || "Notification")}</p>
-              <p class="text-sm text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
-              <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(createdAt)}</p>
+            <div class="p-4 md:p-5">
+              <p class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                ${escapeHtml(notification.title || "Notification")}
+                ${showDot ? '<span class="notif-dot notif-dot-blink"></span>' : ""}
+              </p>
+              <p class="text-sm text-slate-600 mt-1 leading-snug">${escapeHtml(notification.message || "")}</p>
+              <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(formatNotificationTime(notification.createdAt))}</p>
             </div>
           `;
           })
@@ -311,20 +440,20 @@
           }
 
           const merged = mergeSnapshotsById([snapshots.direct, snapshots.role]);
+          updateBellIndicator(merged);
+          renderBellNotifications(merged);
           renderStudentNotifications(merged);
         };
 
         const directQuery = query(
           collection(db, "notifications"),
           where("targetIds", "array-contains", uid),
-          orderBy("createdAt", "desc"),
           limit(20),
         );
 
         const roleQuery = query(
           collection(db, "notifications"),
           where("targetRoles", "array-contains", "student"),
-          orderBy("createdAt", "desc"),
           limit(20),
         );
 
@@ -584,8 +713,17 @@
       }
 
       /* ================= UTILS ================= */
-      window.toggleProfileDropdown = () =>
+      window.toggleBellDropdown = () => {
+        const bell = document.getElementById("bellDropdown");
+        const profile = document.getElementById("profileDropdown");
+        profile.classList.add("hidden");
+        bell.classList.toggle("hidden");
+      };
+
+      window.toggleProfileDropdown = () => {
+        document.getElementById("bellDropdown").classList.add("hidden");
         document.getElementById("profileDropdown").classList.toggle("hidden");
+      };
 
       window.handleLogout = () => {
         signOut(auth).then(() => {
@@ -595,8 +733,12 @@
 
       window.addEventListener("click", (e) => {
         const profileWrapper = document.getElementById("profileWrapper");
+        const bellWrapper = document.getElementById("bellWrapper");
         if (profileWrapper && !profileWrapper.contains(e.target)) {
           document.getElementById("profileDropdown").classList.add("hidden");
+        }
+        if (bellWrapper && !bellWrapper.contains(e.target)) {
+          document.getElementById("bellDropdown").classList.add("hidden");
         }
       });
     </script>

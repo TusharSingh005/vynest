@@ -175,14 +175,12 @@ renderAdminNotifications(mergeNotificationSnapshots([snapshots.direct, snapshots
 const directQuery = query(
 collection(db,"notifications"),
 where("targetIds","array-contains",uid),
-orderBy("createdAt","desc"),
 limit(20)
 );
 
 const roleQuery = query(
 collection(db,"notifications"),
 where("targetRoles","array-contains","admin"),
-orderBy("createdAt","desc"),
 limit(20)
 );
 
