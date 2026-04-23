@@ -11,9 +11,51 @@
   <p id="statusText">Please wait, do not refresh.</p>
 
  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const BACKEND_BASE_URL = "https://vynest-backend.vynest750.workers.dev";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+  authDomain: "vynest-b58fa.firebaseapp.com",
+  projectId: "vynest-b58fa",
+  storageBucket: "vynest-b58fa.firebasestorage.app",
+  messagingSenderId: "503196958388",
+  appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const getIdTokenFromCurrentUser = () =>
+  new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe();
+
+      if (!user) {
+        resolve(null);
+        return;
+      }
+
+      try {
+        const token = await user.getIdToken();
+        resolve(token);
+      } catch (_error) {
+        resolve(null);
+      }
+    });
+  });
+
 const verifyAndSave = async () => {
+  const idToken = await getIdTokenFromCurrentUser();
+
+  if (!idToken) {
+    alert("Please log in to verify your payment.");
+    window.location.href = "/pages/login.html";
+    return;
+  }
+
   const urlParams = new URLSearchParams(window.location.search);
   const orderId = urlParams.get("order_id");
 
@@ -32,7 +74,11 @@ const verifyAndSave = async () => {
     let result = null;
 
     try {
-      const res = await fetch(`${BACKEND_BASE_URL}/verify-payment/${orderId}`);
+      const res = await fetch(`${BACKEND_BASE_URL}/verify-payment/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      });
       result = await res.json();
     } catch (error) {
       console.error("Verify payment failed", error);

@@ -43,6 +43,18 @@
             </div>
         </div>
 
+        <section class="mb-8 md:mb-12">
+            <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-bell text-amber-500"></i>
+                    <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-slate-700">Notifications</h2>
+                </div>
+                <div id="adminNotificationsContainer" class="divide-y divide-slate-100">
+                    <div class="py-4 text-sm text-slate-500">Loading notifications...</div>
+                </div>
+            </div>
+        </section>
+
         <div class="bg-white rounded-3xl md:rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
             <div class="p-6 md:p-8 border-b border-slate-100 flex flex-row items-center justify-start gap-6 md:gap-8">
                 <button onclick="switchTab('users')" id="tab-users" class="tab-active pb-2 text-xs md:text-sm font-black uppercase tracking-widest transition-all">Users List</button>
@@ -70,7 +82,12 @@ collection,
 onSnapshot,
 doc,
 updateDoc,
-deleteDoc
+deleteDoc,
+query,
+where,
+orderBy,
+limit,
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
@@ -94,14 +111,110 @@ appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+let adminNotificationUnsubs = [];
+
+function escapeHtml(value){
+return String(value || "")
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/\"/g, "&quot;")
+.replace(/'/g, "&#39;");
+}
+
+function mergeNotificationSnapshots(snapshots){
+const merged = new Map();
+
+snapshots.forEach((snapshot)=>{
+snapshot.forEach((docSnap)=>{
+merged.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+});
+});
+
+return Array.from(merged.values()).sort((a,b)=>{
+const aMillis = typeof a.createdAt?.toMillis === "function" ? a.createdAt.toMillis() : (a.createdAt?.seconds || 0) * 1000;
+const bMillis = typeof b.createdAt?.toMillis === "function" ? b.createdAt.toMillis() : (b.createdAt?.seconds || 0) * 1000;
+return bMillis - aMillis;
+});
+}
+
+function renderAdminNotifications(items){
+const container = document.getElementById("adminNotificationsContainer");
+
+if(!items.length){
+container.innerHTML = '<div class="py-4 text-sm text-slate-500">No notifications yet.</div>';
+return;
+}
+
+container.innerHTML = items.slice(0,20).map((notification)=>{
+const createdAt = notification.createdAt
+? new Date(typeof notification.createdAt.toMillis === "function" ? notification.createdAt.toMillis() : (notification.createdAt?.seconds || 0) * 1000).toLocaleString("en-IN")
+: "Just now";
+
+return `
+<div class="py-4">
+<p class="text-sm font-black text-slate-800">${escapeHtml(notification.title || "Notification")}</p>
+<p class="text-sm text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
+<p class="text-[11px] text-slate-400 mt-2">${escapeHtml(createdAt)}</p>
+</div>
+`;
+}).join("");
+}
+
+function startAdminNotificationFeed(uid){
+adminNotificationUnsubs.forEach((unsub)=>unsub());
+adminNotificationUnsubs = [];
+
+const snapshots = { direct: null, role: null };
+
+const maybeRender = ()=>{
+if(!snapshots.direct || !snapshots.role) return;
+renderAdminNotifications(mergeNotificationSnapshots([snapshots.direct, snapshots.role]));
+};
+
+const directQuery = query(
+collection(db,"notifications"),
+where("targetIds","array-contains",uid),
+orderBy("createdAt","desc"),
+limit(20)
+);
+
+const roleQuery = query(
+collection(db,"notifications"),
+where("targetRoles","array-contains","admin"),
+orderBy("createdAt","desc"),
+limit(20)
+);
+
+adminNotificationUnsubs.push(onSnapshot(directQuery,(snapshot)=>{
+snapshots.direct = snapshot;
+maybeRender();
+}));
+
+adminNotificationUnsubs.push(onSnapshot(roleQuery,(snapshot)=>{
+snapshots.role = snapshot;
+maybeRender();
+}));
+}
 
 
 /* ================= AUTH ================= */
 
-onAuthStateChanged(auth,(user)=>{
+onAuthStateChanged(auth, async (user)=>{
 if(!user){
 window.location.href="./login.html";
+return;
 }
+
+const userSnap = await getDoc(doc(db,"users",user.uid));
+
+if(!userSnap.exists() || (userSnap.data().role || "student") !== "admin"){
+await signOut(auth);
+window.location.href="../../pages/login.html";
+return;
+}
+
+startAdminNotificationFeed(user.uid);
 });
 
 window.handleLogout = async()=>{

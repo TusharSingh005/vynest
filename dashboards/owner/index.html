@@ -132,6 +132,21 @@
         </div>
       </div>
 
+      <section class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center gap-2">
+            <span>🔔</span>
+            Notifications
+          </h2>
+        </div>
+        <div
+          id="ownerNotificationsContainer"
+          class="bg-white rounded-[2rem] border border-slate-100 shadow-sm divide-y divide-slate-100"
+        >
+          <div class="p-5 text-sm text-slate-500">Loading notifications...</div>
+        </div>
+      </section>
+
       <div
         id="roomGrid"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
@@ -537,6 +552,7 @@
         query,
         orderBy,
         where,
+        limit,
         serverTimestamp,
         getDoc,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -569,6 +585,113 @@
       let selectedFiles = [];
       let coords = { lat: null, lng: null };
       let currentRoomData = null;
+      let ownerNotificationUnsubs = [];
+
+      const escapeHtml = (value) =>
+        String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+
+      const mergeNotificationDocs = (snapshots) => {
+        const merged = new Map();
+
+        snapshots.forEach((snapshot) => {
+          snapshot.forEach((docSnap) => {
+            merged.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+          });
+        });
+
+        return Array.from(merged.values()).sort((a, b) => {
+          const aMillis =
+            typeof a.createdAt?.toMillis === "function"
+              ? a.createdAt.toMillis()
+              : (a.createdAt?.seconds || 0) * 1000;
+          const bMillis =
+            typeof b.createdAt?.toMillis === "function"
+              ? b.createdAt.toMillis()
+              : (b.createdAt?.seconds || 0) * 1000;
+          return bMillis - aMillis;
+        });
+      };
+
+      const renderOwnerNotifications = (notifications) => {
+        const container = document.getElementById("ownerNotificationsContainer");
+
+        if (!notifications.length) {
+          container.innerHTML =
+            '<div class="p-5 text-sm text-slate-500">No notifications yet.</div>';
+          return;
+        }
+
+        container.innerHTML = notifications
+          .slice(0, 20)
+          .map((notification) => {
+            const createdAt = notification.createdAt
+              ? new Date(
+                  typeof notification.createdAt.toMillis === "function"
+                    ? notification.createdAt.toMillis()
+                    : (notification.createdAt?.seconds || 0) * 1000,
+                ).toLocaleString("en-IN")
+              : "Just now";
+
+            return `
+              <div class="p-5">
+                <p class="text-sm font-extrabold text-slate-800">${escapeHtml(notification.title || "Notification")}</p>
+                <p class="text-sm text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
+                <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(createdAt)}</p>
+              </div>
+            `;
+          })
+          .join("");
+      };
+
+      const startOwnerNotificationFeed = (uid) => {
+        ownerNotificationUnsubs.forEach((unsub) => unsub());
+        ownerNotificationUnsubs = [];
+
+        const snapshots = { direct: null, role: null };
+
+        const maybeRender = () => {
+          if (!snapshots.direct || !snapshots.role) {
+            return;
+          }
+
+          renderOwnerNotifications(
+            mergeNotificationDocs([snapshots.direct, snapshots.role]),
+          );
+        };
+
+        const directQuery = query(
+          collection(db, "notifications"),
+          where("targetIds", "array-contains", uid),
+          orderBy("createdAt", "desc"),
+          limit(20),
+        );
+
+        const roleQuery = query(
+          collection(db, "notifications"),
+          where("targetRoles", "array-contains", "owner"),
+          orderBy("createdAt", "desc"),
+          limit(20),
+        );
+
+        ownerNotificationUnsubs.push(
+          onSnapshot(directQuery, (snapshot) => {
+            snapshots.direct = snapshot;
+            maybeRender();
+          }),
+        );
+
+        ownerNotificationUnsubs.push(
+          onSnapshot(roleQuery, (snapshot) => {
+            snapshots.role = snapshot;
+            maybeRender();
+          }),
+        );
+      };
 
       window.toggleModal = () =>
         document.getElementById("roomModal").classList.toggle("hidden");
@@ -668,6 +791,7 @@
 
             getUserProfile(user.uid);
             fetchRooms(user.uid);
+            startOwnerNotificationFeed(user.uid);
           });
         } else {
           window.location.href = "../../pages/login.html";

@@ -29,6 +29,24 @@ const db = admin.firestore();
 const CLIENT_ID = requiredEnv(process.env.CASHFREE_CLIENT_ID, "CASHFREE_CLIENT_ID");
 const CLIENT_SECRET = requiredEnv(process.env.CASHFREE_CLIENT_SECRET, "CASHFREE_CLIENT_SECRET");
 
+const FALLBACK_CUSTOMER_PHONE = "7054364074";
+const FALLBACK_CUSTOMER_EMAIL = "student@vynest.in";
+
+const normalizeCustomerPhone = (value) => {
+  const digits = String(value || "").replace(/\D/g, "");
+
+  if (digits.length === 10) return digits;
+  if (digits.length === 12 && digits.startsWith("91")) return digits.slice(2);
+
+  return FALLBACK_CUSTOMER_PHONE;
+};
+
+const normalizeCustomerEmail = (value) => {
+  const email = String(value || "").trim().toLowerCase();
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return isValidEmail ? email : FALLBACK_CUSTOMER_EMAIL;
+};
+
 const calculateBookingFee = (propertyType, roomType) => {
   const normalizedPropertyType = (propertyType || "").toLowerCase();
   const normalizedRoomType = (roomType || "").toLowerCase();
@@ -84,13 +102,17 @@ app.post("/create-order", async (req, res) => {
       return res.status(400).json({ error: "Missing fields" });
     }
 
-    const roomSnap = await db.collection("rooms").doc(roomId).get();
+    const [roomSnap, userSnap] = await Promise.all([
+      db.collection("rooms").doc(roomId).get(),
+      db.collection("users").doc(userId).get()
+    ]);
 
     if (!roomSnap.exists) {
       return res.status(404).json({ error: "Room not found" });
     }
 
     const roomData = roomSnap.data();
+    const userData = userSnap.exists ? userSnap.data() : {};
     const selectedRoom = roomData.roomDetails?.[parsedOccupancyIndex];
 
     if (!selectedRoom) {
@@ -113,7 +135,8 @@ app.post("/create-order", async (req, res) => {
         order_currency: "INR",
         customer_details: {
           customer_id: userId,
-          customer_phone: "+91 7054364074"
+          customer_email: normalizeCustomerEmail(userData.email),
+          customer_phone: normalizeCustomerPhone(userData.phone)
         }
       },
       {

@@ -48,6 +48,7 @@ logs/
 
 # Downloaded files
 Downloads/
+vynest-backend
 
 # wrangler files
 .wrangler
