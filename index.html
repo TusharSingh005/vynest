@@ -1653,47 +1653,49 @@
           const badgeText = isAvailable ? `${bedsLeft} Beds Left` : "Sold Out";
 
     grid.innerHTML += `
-      <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 group relative">
-        <div class="absolute top-4 left-4 ${badgeClass} backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg z-10">
-            ${badgeText}
-        </div>
+     <a href="/pages/room-details.html?id=${room.id}" 
+   class="block bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-100 group relative">
 
-        <div class="h-52 overflow-hidden">
-          <img src="${room.imageUrls?.[0] || 'https://via.placeholder.com/400x300'}" 
-               class="w-full h-full object-cover group-hover:scale-110 transition duration-500 ${!isAvailable ? 'grayscale' : ''}">
-        </div>
+  <div class="absolute top-4 left-4 ${badgeClass} backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg z-10">
+      ${badgeText}
+  </div>
 
-        <div class="p-6">
-          <div class="flex justify-between items-start mb-2">
-            <h3 class="text-lg font-bold text-slate-800 truncate pr-2">${room.propertyName}</h3>
-            <div class="flex gap-1 shrink-0">
-              <span class="${pStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
-                ${room.propertyType.replace(/_/g, " ")}
-              </span>
-              <span class="${gStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
-                ${room.gender === 'male' ? 'boy' : room.gender === 'female' ? 'girl' : 'unisex'}
-              </span>
-            </div>
-          </div>
+  <div class="h-52 overflow-hidden">
+    <img src="${room.imageUrls?.[0] || 'https://via.placeholder.com/400x300'}" 
+         class="w-full h-full object-cover group-hover:scale-110 transition duration-500 ${!isAvailable ? 'grayscale' : ''}">
+  </div>
 
-      <p class="text-slate-400 text-xs mb-4 flex items-center gap-1 truncate">
-        📍 ${room.address || ""}
-      </p>
+  <div class="p-6">
+    <div class="flex justify-between items-start mb-2">
+      <h3 class="text-lg font-bold text-slate-800 truncate pr-2">${room.propertyName}</h3>
+      <div class="flex gap-1 shrink-0">
+        <span class="${pStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
+          ${room.propertyType.replace(/_/g, " ")}
+        </span>
+        <span class="${gStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
+          ${room.gender === 'male' ? 'boy' : room.gender === 'female' ? 'girl' : 'unisex'}
+        </span>
+      </div>
+    </div>
 
-      <div class="flex justify-between items-center pt-2 border-t border-slate-50">
-        <div>
-          <span class="text-xs text-slate-400 block leading-none">Starting from</span>
-          <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
-          <span class="text-[10px] text-slate-400">/mo</span>
-        </div>
+    <p class="text-slate-400 text-xs mb-4 flex items-center gap-1 truncate">
+      📍 ${room.address || ""}
+    </p>
 
-            <a href="/pages/room-details.html?id=${room.id}" 
-               class="${isAvailable ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-slate-400 cursor-not-allowed'} text-white px-4 py-2 rounded-xl text-xs font-bold transition">
-              ${isAvailable ? 'View Details' : 'Full'}
-            </a>
-          </div>
-        </div>
-      </div>`;
+    <div class="flex justify-between items-center pt-2 border-t border-slate-50">
+      <div>
+        <span class="text-xs text-slate-400 block leading-none">Starting from</span>
+        <span class="text-xl font-black text-indigo-600">₹${room.lowestPrice || 0}</span>
+        <span class="text-[10px] text-slate-400">/mo</span>
+      </div>
+
+      <div class="${isAvailable ? 'bg-indigo-600' : 'bg-slate-400'} text-white px-4 py-2 rounded-xl text-xs font-bold">
+        ${isAvailable ? 'View Details' : 'Full'}
+      </div>
+    </div>
+  </div>
+
+</a>`;
   });
 }
   /* ================= FETCH ROOMS ================= */
