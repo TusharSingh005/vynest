@@ -98,6 +98,18 @@
       const NEW_NOTIFICATION_WINDOW_MS = 12 * 60 * 60 * 1000;
       let notificationUnsubscribers = [];
 
+      function getSeenNotificationStorageKey(uid) {
+        return `vynest_seen_notif_${uid || "guest"}`;
+      }
+
+      function setSeenNotificationId(uid, notificationId) {
+        if (!uid || !notificationId) {
+          return;
+        }
+
+        localStorage.setItem(getSeenNotificationStorageKey(uid), notificationId);
+      }
+
       function escapeHtml(value) {
         return String(value || "")
           .replace(/&/g, "&amp;")
@@ -191,6 +203,9 @@
           }
 
           const merged = mergeSnapshotsById([snapshots.direct, snapshots.role]);
+          if (merged.length) {
+            setSeenNotificationId(uid, merged[0].id);
+          }
           renderNotifications(merged);
         };
 

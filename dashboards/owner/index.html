@@ -56,6 +56,31 @@
         >
           ℹ️
         </button>
+        <div class="relative" id="bellWrapper">
+          <button
+            id="bellBtn"
+            onclick="toggleBellDropdown()"
+            class="relative w-9 h-9 flex items-center justify-center bg-gray-50 border rounded-full hover:bg-gray-100 transition"
+            title="Notifications"
+          >
+            <span class="text-sm">🔔</span>
+            <span
+              id="navBellDot"
+              class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-pulse"
+            ></span>
+          </button>
+          <div
+            id="bellDropdown"
+            class="hidden fixed inset-x-3 top-20 bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden z-50 md:absolute md:inset-x-auto md:top-full md:right-0 md:mt-3 md:w-[22rem]"
+          >
+            <div class="px-4 py-3 border-b bg-slate-50/70">
+              <p class="text-xs font-black text-slate-700 uppercase tracking-widest">Notifications</p>
+            </div>
+            <div id="ownerBellNotificationsContainer" class="max-h-[58vh] overflow-y-auto divide-y divide-slate-100 md:max-h-80">
+              <div class="p-4 text-sm text-slate-500">Loading notifications...</div>
+            </div>
+          </div>
+        </div>
         <div class="relative">
           <button
             id="profileBtn"
@@ -131,21 +156,6 @@
           </button>
         </div>
       </div>
-
-      <section class="mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center gap-2">
-            <span>🔔</span>
-            Notifications
-          </h2>
-        </div>
-        <div
-          id="ownerNotificationsContainer"
-          class="bg-white rounded-[2rem] border border-slate-100 shadow-sm divide-y divide-slate-100"
-        >
-          <div class="p-5 text-sm text-slate-500">Loading notifications...</div>
-        </div>
-      </section>
 
       <div
         id="roomGrid"
@@ -586,6 +596,8 @@
       let coords = { lat: null, lng: null };
       let currentRoomData = null;
       let ownerNotificationUnsubs = [];
+      let currentOwnerUid = null;
+      let latestOwnerNotifications = [];
 
       const escapeHtml = (value) =>
         String(value || "")
@@ -595,57 +607,100 @@
           .replace(/\"/g, "&quot;")
           .replace(/'/g, "&#39;");
 
+      const toMillis = (timestamp) =>
+        typeof timestamp?.toMillis === "function"
+          ? timestamp.toMillis()
+          : (timestamp?.seconds || 0) * 1000;
+
+      const getSeenNotificationStorageKey = (uid) =>
+        `vynest_seen_notif_owner_${uid || "guest"}`;
+
+      const getSeenNotificationId = (uid) =>
+        localStorage.getItem(getSeenNotificationStorageKey(uid)) || "";
+
+      const setSeenNotificationId = (uid, notificationId) => {
+        if (!uid || !notificationId) {
+          return;
+        }
+
+        localStorage.setItem(getSeenNotificationStorageKey(uid), notificationId);
+      };
+
       const mergeNotificationDocs = (snapshots) => {
-        const merged = new Map();
+        const mergedMap = new Map();
 
         snapshots.forEach((snapshot) => {
           snapshot.forEach((docSnap) => {
-            merged.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+            mergedMap.set(docSnap.id, {
+              id: docSnap.id,
+              ...docSnap.data(),
+            });
           });
         });
 
-        return Array.from(merged.values()).sort((a, b) => {
-          const aMillis =
-            typeof a.createdAt?.toMillis === "function"
-              ? a.createdAt.toMillis()
-              : (a.createdAt?.seconds || 0) * 1000;
-          const bMillis =
-            typeof b.createdAt?.toMillis === "function"
-              ? b.createdAt.toMillis()
-              : (b.createdAt?.seconds || 0) * 1000;
-          return bMillis - aMillis;
-        });
+        return Array.from(mergedMap.values()).sort(
+          (a, b) => toMillis(b.createdAt) - toMillis(a.createdAt),
+        );
       };
 
-      const renderOwnerNotifications = (notifications) => {
-        const container = document.getElementById("ownerNotificationsContainer");
+      const updateOwnerBellIndicator = (notifications) => {
+        const navDot = document.getElementById("navBellDot");
+
+        if (!notifications.length || !currentOwnerUid) {
+          navDot.classList.add("hidden");
+          return;
+        }
+
+        const latestId = notifications[0]?.id || "";
+        const seenId = getSeenNotificationId(currentOwnerUid);
+
+        if (!latestId || latestId === seenId) {
+          navDot.classList.add("hidden");
+          return;
+        }
+
+        navDot.classList.remove("hidden");
+      };
+
+      const renderOwnerBellNotifications = (notifications) => {
+        const container = document.getElementById("ownerBellNotificationsContainer");
 
         if (!notifications.length) {
           container.innerHTML =
-            '<div class="p-5 text-sm text-slate-500">No notifications yet.</div>';
+            '<div class="p-4 text-sm text-slate-500">No notifications yet.</div>';
           return;
         }
 
         container.innerHTML = notifications
-          .slice(0, 20)
+          .slice(0, 8)
           .map((notification) => {
             const createdAt = notification.createdAt
-              ? new Date(
-                  typeof notification.createdAt.toMillis === "function"
-                    ? notification.createdAt.toMillis()
-                    : (notification.createdAt?.seconds || 0) * 1000,
-                ).toLocaleString("en-IN")
+              ? new Date(toMillis(notification.createdAt)).toLocaleString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
               : "Just now";
 
             return `
-              <div class="p-5">
-                <p class="text-sm font-extrabold text-slate-800">${escapeHtml(notification.title || "Notification")}</p>
-                <p class="text-sm text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
+              <div class="p-4">
+                <p class="text-sm font-bold text-slate-800">${escapeHtml(notification.title || "Notification")}</p>
+                <p class="text-xs text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
                 <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(createdAt)}</p>
               </div>
             `;
           })
           .join("");
+      };
+
+      const markOwnerNotificationsSeen = () => {
+        if (!currentOwnerUid || !latestOwnerNotifications.length) {
+          return;
+        }
+
+        setSeenNotificationId(currentOwnerUid, latestOwnerNotifications[0].id);
+        updateOwnerBellIndicator(latestOwnerNotifications);
       };
 
       const startOwnerNotificationFeed = (uid) => {
@@ -659,9 +714,10 @@
             return;
           }
 
-          renderOwnerNotifications(
-            mergeNotificationDocs([snapshots.direct, snapshots.role]),
-          );
+          const merged = mergeNotificationDocs([snapshots.direct, snapshots.role]);
+          latestOwnerNotifications = merged;
+          updateOwnerBellIndicator(merged);
+          renderOwnerBellNotifications(merged);
         };
 
         const directQuery = query(
@@ -787,6 +843,7 @@
               return;
             }
 
+            currentOwnerUid = user.uid;
             getUserProfile(user.uid);
             fetchRooms(user.uid);
             startOwnerNotificationFeed(user.uid);
@@ -1090,7 +1147,18 @@
     </script>
 
     <script>
+      function toggleBellDropdown() {
+        const bell = document.getElementById("bellDropdown");
+        const profile = document.getElementById("profileDropdown");
+        profile.classList.add("hidden");
+        bell.classList.toggle("hidden");
+
+        if (!bell.classList.contains("hidden")) {
+          markOwnerNotificationsSeen();
+        }
+      }
       function toggleProfileDropdown() {
+        document.getElementById("bellDropdown")?.classList.add("hidden");
         document.getElementById("profileDropdown").classList.toggle("hidden");
       }
       function openFeeModal() {
@@ -1103,8 +1171,18 @@
       document.addEventListener("click", (e) => {
         const btn = document.getElementById("profileBtn");
         const dropdown = document.getElementById("profileDropdown");
+        const bellBtn = document.getElementById("bellBtn");
+        const bellDropdown = document.getElementById("bellDropdown");
         if (btn && !btn.contains(e.target) && !dropdown.contains(e.target))
           dropdown.classList.add("hidden");
+        if (
+          bellBtn &&
+          bellDropdown &&
+          !bellBtn.contains(e.target) &&
+          !bellDropdown.contains(e.target)
+        ) {
+          bellDropdown.classList.add("hidden");
+        }
       });
       const compressImage = (file) => {
         return new Promise((resolve) => {

@@ -275,6 +275,33 @@
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       let notificationUnsubscribers = [];
       const NEW_NOTIFICATION_WINDOW_MS = 12 * 60 * 60 * 1000;
+      let currentStudentUid = null;
+      let latestNotifications = [];
+
+      function getSeenNotificationStorageKey(uid) {
+        return `vynest_seen_notif_${uid || "guest"}`;
+      }
+
+      function getSeenNotificationId(uid) {
+        return localStorage.getItem(getSeenNotificationStorageKey(uid)) || "";
+      }
+
+      function setSeenNotificationId(uid, notificationId) {
+        if (!uid || !notificationId) {
+          return;
+        }
+
+        localStorage.setItem(getSeenNotificationStorageKey(uid), notificationId);
+      }
+
+      function markNotificationsSeen() {
+        if (!currentStudentUid || !latestNotifications.length) {
+          return;
+        }
+
+        setSeenNotificationId(currentStudentUid, latestNotifications[0].id);
+        updateBellIndicator(latestNotifications);
+      }
 
       function escapeHtml(value) {
         return String(value || "")
@@ -340,7 +367,15 @@
       function updateBellIndicator(notifications) {
         const navDot = document.getElementById("navBellDot");
 
-        if (!notifications.length || !isFreshNotification(notifications[0])) {
+        if (!notifications.length || !currentStudentUid) {
+          navDot.classList.add("hidden");
+          return;
+        }
+
+        const latestNotificationId = notifications[0]?.id || "";
+        const seenNotificationId = getSeenNotificationId(currentStudentUid);
+
+        if (!latestNotificationId || latestNotificationId === seenNotificationId) {
           navDot.classList.add("hidden");
           return;
         }
@@ -391,6 +426,7 @@
           }
 
           const merged = mergeSnapshotsById([snapshots.direct, snapshots.role]);
+          latestNotifications = merged;
           updateBellIndicator(merged);
           renderBellNotifications(merged);
         };
@@ -485,6 +521,8 @@
           window.location.href = "/pages/login.html";
           return;
         }
+
+        currentStudentUid = user.uid;
 
         const canContinue = await allowStudentView(user);
 
@@ -668,6 +706,10 @@
         const profile = document.getElementById("profileDropdown");
         profile.classList.add("hidden");
         bell.classList.toggle("hidden");
+
+        if (!bell.classList.contains("hidden")) {
+          markNotificationsSeen();
+        }
       };
 
       window.toggleProfileDropdown = () => {

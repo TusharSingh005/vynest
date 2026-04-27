@@ -21,9 +21,33 @@
                 </a>
                 <span class="bg-indigo-600 text-white text-[7px] md:text-[9px] font-black px-1.5 md:px-2 py-0.5 rounded tracking-widest uppercase">Admin</span>
             </div>
-            <button onclick="handleLogout()" class="text-rose-500 font-bold text-xs md:text-sm hover:bg-rose-50 px-3 md:px-4 py-2 rounded-xl transition">
-                <i class="fa-solid fa-power-off mr-1 md:mr-2"></i>Logout
-            </button>
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="relative" id="adminBellWrapper">
+                    <button
+                        id="adminBellBtn"
+                        onclick="toggleAdminBellDropdown()"
+                        class="relative w-9 h-9 flex items-center justify-center bg-slate-50 border border-slate-200 rounded-full hover:bg-slate-100 transition"
+                        title="Notifications"
+                    >
+                        <i class="fa-solid fa-bell text-slate-600 text-sm"></i>
+                        <span id="adminNavBellDot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    </button>
+                    <div
+                        id="adminBellDropdown"
+                        class="hidden fixed inset-x-3 top-20 bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden z-50 md:absolute md:inset-x-auto md:top-full md:right-0 md:mt-3 md:w-[22rem]"
+                    >
+                        <div class="px-4 py-3 border-b bg-slate-50/70">
+                            <p class="text-xs font-black text-slate-700 uppercase tracking-widest">Notifications</p>
+                        </div>
+                        <div id="adminBellNotificationsContainer" class="max-h-[58vh] overflow-y-auto divide-y divide-slate-100 md:max-h-80">
+                            <div class="p-4 text-sm text-slate-500">Loading notifications...</div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="text-rose-500 font-bold text-xs md:text-sm hover:bg-rose-50 px-3 md:px-4 py-2 rounded-xl transition">
+                    <i class="fa-solid fa-power-off mr-1 md:mr-2"></i>Logout
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -42,18 +66,6 @@
                 <h3 id="stat-bookings" class="text-lg md:text-4xl font-black text-slate-900 mt-1 md:mt-2">0</h3>
             </div>
         </div>
-
-        <section class="mb-8 md:mb-12">
-            <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
-                <div class="flex items-center gap-2 mb-4">
-                    <i class="fa-solid fa-bell text-amber-500"></i>
-                    <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-slate-700">Notifications</h2>
-                </div>
-                <div id="adminNotificationsContainer" class="divide-y divide-slate-100">
-                    <div class="py-4 text-sm text-slate-500">Loading notifications...</div>
-                </div>
-            </div>
-        </section>
 
         <div class="bg-white rounded-3xl md:rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
             <div class="p-6 md:p-8 border-b border-slate-100 flex flex-row items-center justify-start gap-6 md:gap-8">
@@ -112,6 +124,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 let adminNotificationUnsubs = [];
+let currentAdminUid = null;
+let latestAdminNotifications = [];
 
 function escapeHtml(value){
 return String(value || "")
@@ -120,6 +134,25 @@ return String(value || "")
 .replace(/>/g, "&gt;")
 .replace(/\"/g, "&quot;")
 .replace(/'/g, "&#39;");
+}
+
+function toMillis(timestamp){
+return typeof timestamp?.toMillis === "function"
+? timestamp.toMillis()
+: (timestamp?.seconds || 0) * 1000;
+}
+
+function getSeenNotificationStorageKey(uid){
+return `vynest_seen_notif_admin_${uid || "guest"}`;
+}
+
+function getSeenNotificationId(uid){
+return localStorage.getItem(getSeenNotificationStorageKey(uid)) || "";
+}
+
+function setSeenNotificationId(uid, notificationId){
+if(!uid || !notificationId) return;
+localStorage.setItem(getSeenNotificationStorageKey(uid), notificationId);
 }
 
 function mergeNotificationSnapshots(snapshots){
@@ -131,34 +164,55 @@ merged.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
 });
 });
 
-return Array.from(merged.values()).sort((a,b)=>{
-const aMillis = typeof a.createdAt?.toMillis === "function" ? a.createdAt.toMillis() : (a.createdAt?.seconds || 0) * 1000;
-const bMillis = typeof b.createdAt?.toMillis === "function" ? b.createdAt.toMillis() : (b.createdAt?.seconds || 0) * 1000;
-return bMillis - aMillis;
-});
+return Array.from(merged.values()).sort((a,b)=> toMillis(b.createdAt) - toMillis(a.createdAt));
 }
 
-function renderAdminNotifications(items){
-const container = document.getElementById("adminNotificationsContainer");
+function updateAdminBellIndicator(notifications){
+const navDot = document.getElementById("adminNavBellDot");
 
-if(!items.length){
-container.innerHTML = '<div class="py-4 text-sm text-slate-500">No notifications yet.</div>';
+if(!notifications.length || !currentAdminUid){
+navDot.classList.add("hidden");
 return;
 }
 
-container.innerHTML = items.slice(0,20).map((notification)=>{
+const latestId = notifications[0]?.id || "";
+const seenId = getSeenNotificationId(currentAdminUid);
+
+if(!latestId || latestId === seenId){
+navDot.classList.add("hidden");
+return;
+}
+
+navDot.classList.remove("hidden");
+}
+
+function renderAdminBellNotifications(items){
+const container = document.getElementById("adminBellNotificationsContainer");
+
+if(!items.length){
+container.innerHTML = '<div class="p-4 text-sm text-slate-500">No notifications yet.</div>';
+return;
+}
+
+container.innerHTML = items.slice(0,8).map((notification)=>{
 const createdAt = notification.createdAt
-? new Date(typeof notification.createdAt.toMillis === "function" ? notification.createdAt.toMillis() : (notification.createdAt?.seconds || 0) * 1000).toLocaleString("en-IN")
+? new Date(toMillis(notification.createdAt)).toLocaleString("en-IN", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" })
 : "Just now";
 
 return `
-<div class="py-4">
+<div class="p-4">
 <p class="text-sm font-black text-slate-800">${escapeHtml(notification.title || "Notification")}</p>
-<p class="text-sm text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
+<p class="text-xs text-slate-600 mt-1">${escapeHtml(notification.message || "")}</p>
 <p class="text-[11px] text-slate-400 mt-2">${escapeHtml(createdAt)}</p>
 </div>
 `;
 }).join("");
+}
+
+function markAdminNotificationsSeen(){
+if(!currentAdminUid || !latestAdminNotifications.length) return;
+setSeenNotificationId(currentAdminUid, latestAdminNotifications[0].id);
+updateAdminBellIndicator(latestAdminNotifications);
 }
 
 function startAdminNotificationFeed(uid){
@@ -169,7 +223,10 @@ const snapshots = { direct: null, role: null };
 
 const maybeRender = ()=>{
 if(!snapshots.direct || !snapshots.role) return;
-renderAdminNotifications(mergeNotificationSnapshots([snapshots.direct, snapshots.role]));
+const merged = mergeNotificationSnapshots([snapshots.direct, snapshots.role]);
+latestAdminNotifications = merged;
+updateAdminBellIndicator(merged);
+renderAdminBellNotifications(merged);
 };
 
 const directQuery = query(
@@ -195,6 +252,15 @@ maybeRender();
 }));
 }
 
+window.toggleAdminBellDropdown = ()=>{
+const bell = document.getElementById("adminBellDropdown");
+bell.classList.toggle("hidden");
+
+if(!bell.classList.contains("hidden")){
+markAdminNotificationsSeen();
+}
+};
+
 
 /* ================= AUTH ================= */
 
@@ -212,6 +278,7 @@ window.location.href="../../pages/login.html";
 return;
 }
 
+currentAdminUid = user.uid;
 startAdminNotificationFeed(user.uid);
 });
 
@@ -450,6 +517,19 @@ await deleteDoc(doc(db,"rooms",id));
 
 updateStats();
 switchTab("users");
+
+document.addEventListener("click", (e)=>{
+const bellBtn = document.getElementById("adminBellBtn");
+const bellDropdown = document.getElementById("adminBellDropdown");
+if(
+bellBtn &&
+bellDropdown &&
+!bellBtn.contains(e.target) &&
+!bellDropdown.contains(e.target)
+){
+bellDropdown.classList.add("hidden");
+}
+});
 
 </script>
 
