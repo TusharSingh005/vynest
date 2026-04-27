@@ -1,847 +1,1161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rooms | Vynest</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" href="/imgs/favicon.ico">
- <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/01/31/09/20260131093009-MPUY9V47.js" defer></script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XE9WCW7ZB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms | Vynest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="/imgs/favicon.ico" />
+    <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
+    <script
+      src="https://files.bpcontent.cloud/2026/01/31/09/20260131093009-MPUY9V47.js"
+      defer
+    ></script>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-4XE9WCW7ZB"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-  gtag('config', 'G-4XE9WCW7ZB');
-</script>
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="font-sans">
-  
-<!-- ==============================navbar=================================== -->
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+      gtag("config", "G-4XE9WCW7ZB");
+    </script>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="font-sans">
+    <!-- ==============================navbar=================================== -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
 
-.font-sans {
-    font-family: 'Inter', sans-serif;
-}
-    html {
+      .font-sans {
+        font-family: "Inter", sans-serif;
+      }
+      html {
         scroll-behavior: smooth;
-    }
-    #mobile-menu {
+      }
+      #mobile-menu {
         transition: transform 0.3s ease-in-out;
-    }
-    #mobile-menu.hidden-custom {
+      }
+      #mobile-menu.hidden-custom {
         transform: translateX(100%);
-    }
+      }
       #login-btn-container,
-#profile-dropdown-container,
-#mobile-login-btn,
-#mobile-profile-links {
-  display: none;
-}
-.modal-animate {
+      #profile-dropdown-container,
+      #mobile-login-btn,
+      #mobile-profile-links {
+        display: none;
+      }
+      .modal-animate {
         animation: slideUp 0.3s ease-out;
-    }
+      }
 
-    @keyframes slideUp {
-        from { transform: translateY(10px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-</style>
+      @keyframes slideUp {
+        from {
+          transform: translateY(10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+    </style>
 
-<nav class="sticky top-0 z-50 bg-white shadow-sm px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-2">
+    <nav
+      class="sticky top-0 z-50 bg-white shadow-sm px-6 py-4 flex items-center justify-between"
+    >
+      <div class="flex items-center gap-2">
         <a href="../index.html">
-            <img src="../imgs/logo.png" alt="logo" width="150px">
+          <img src="../imgs/logo.png" alt="logo" width="150px" />
         </a>
-    </div>
+      </div>
 
-    <div class="flex items-center gap-8">
-        <div class="hidden md:flex items-center gap-8 text-gray-600 font-medium">
-            <a href="../index.html" class="hover:text-indigo-600 transition">Home</a>
-            <a href="about.html" class="hover:text-indigo-600 transition">About</a>
-            <a href="rooms.html" class="text-indigo-600 border-b-2 border-indigo-600">Rooms</a>
-            <a href="../index.html#cta" class="hover:text-indigo-600 transition text-nowrap">Register your Property</a>
-            <a href="contact.html" class="hover:text-indigo-600 transition">Contact</a>
+      <div class="flex items-center gap-8">
+        <div
+          class="hidden md:flex items-center gap-8 text-gray-600 font-medium"
+        >
+          <a href="../index.html" class="hover:text-indigo-600 transition"
+            >Home</a
+          >
+          <a href="about.html" class="hover:text-indigo-600 transition"
+            >About</a
+          >
+          <a
+            href="rooms.html"
+            class="text-indigo-600 border-b-2 border-indigo-600"
+            >Rooms</a
+          >
+          <a
+            href="../index.html#cta"
+            class="hover:text-indigo-600 transition text-nowrap"
+            >Register your Property</a
+          >
+          <a href="contact.html" class="hover:text-indigo-600 transition"
+            >Contact</a
+          >
         </div>
 
         <div class="flex items-center gap-4">
-           <a href="login.html" id="login-btn-container" class="hidden sm:block">
-  <button class="bg-indigo-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-md">
-    Login
-  </button>
-</a>
-
- <div class="relative hidden" id="profile-dropdown-container">
-  <button onclick="toggleMainProfileDropdown()" class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full p-1 pr-3 hover:bg-slate-100 transition focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
-    <div id="user-avatar" class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black uppercase shadow-inner border border-white/20">
-      --
-    </div>
-    <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-    </svg>
-  </button>
-
-  <div id="main-profile-dropdown" class="absolute right-0 mt-3 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl hidden z-50 overflow-hidden modal-animate">
-    <div class="px-5 py-4 border-b bg-slate-50/50">
-      <p id="user-role-label" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Account</p>
-      <p id="user-email-nav" class="text-xs font-bold text-slate-700 truncate">Loading...</p>
-    </div>
-
-    <div class="p-1.5">
-      <a id="dashboard-link" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition font-medium">
-        <span class="text-indigo-400">🏠</span> Dashboard
-      </a>
-      
-      <a id="profile-link" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition font-medium">
-        <span class="text-indigo-400">👤</span> My Profile
-      </a>
-
-      <button onclick="handleMainLogout()" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition font-medium border-t border-slate-50 mt-1 pt-2">
-        <span class="text-red-400">🚪</span> Logout
-      </button>
-    </div>
-  </div>
-</div>
-
-            <button id="menu-btn" class="md:hidden text-gray-600 focus:outline-none z-[60]">
-                <svg id="menu-icon" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
+          <a href="login.html" id="login-btn-container" class="hidden sm:block">
+            <button
+              class="bg-indigo-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-md"
+            >
+              Login
             </button>
-        </div>
-    </div>
-
-    <div id="menu-overlay" class="fixed inset-0 bg-black/20 hidden z-40 md:hidden"></div>
-
-    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-white shadow-2xl z-50 md:hidden hidden-custom">
-        <div class="flex flex-col p-8 pt-24 space-y-6 font-medium text-gray-600 h-full">
-            <a href="../index.html" class="hover:text-indigo-600 transition text-lg">Home</a>
-            <a href="about.html" class="hover:text-indigo-600 transition text-lg">About</a>
-            <a href="rooms.html" class="text-indigo-600 text-lg">Rooms</a>
-            <a href="../index.html#cta" class="hover:text-indigo-600 transition text-lg">Register your Property</a>
-            <a href="contact.html" class="hover:text-indigo-600 transition text-lg">Contact</a>
-            <hr class="border-gray-100">
-            <div id="mobile-auth-container">
-  <a href="login.html" id="mobile-login-btn">
-    <button class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">
-      Login
-    </button>
-  </a>
-
-  <div id="mobile-profile-links" class="hidden space-y-6">
-   
-    <button onclick="handleMainLogout()" class="w-full text-left text-red-600 text-lg font-bold">
-      Logout
-    </button>
-  </div>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<script>
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const overlay = document.getElementById('menu-overlay');
-
-    function toggleMenu() {
-        const isHidden = mobileMenu.classList.contains('hidden-custom');
-
-        if (isHidden) {
-            // Open the Drawer
-            mobileMenu.classList.remove('hidden-custom');
-            overlay.classList.remove('hidden');
-            menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>`;
-            document.body.style.overflow = 'hidden'; // Stop scrolling background
-        } else {
-            // Close the Drawer
-            mobileMenu.classList.add('hidden-custom');
-            overlay.classList.add('hidden');
-            menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>`;
-            document.body.style.overflow = ''; // Resume scrolling
-        }
-    }
-
-    menuBtn.addEventListener('click', toggleMenu);
-    overlay.addEventListener('click', toggleMenu);
-
-    // Auto-close drawer if a link is clicked
-    const navLinks = mobileMenu.querySelectorAll('a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (!mobileMenu.classList.contains('hidden-custom')) {
-                toggleMenu();
-            }
-        });
-    });
-</script>
-  
-
-<!-- ==============================header=================================== -->
-
-<section class="relative w-full h-[380px] md:h-[450px] flex flex-col items-center justify-center overflow-visible font-sans">
-
-  <div class="absolute inset-0 z-0">
-    <img 
-src="https://assets.architecturaldigest.in/photos/65b2aecf269da4a0ee6c9b40/master/w_1600%2Cc_limit/atr.royalmansion-bedroom2-mr.jpg"
-loading="eager"
-fetchpriority="high"
-class="w-full h-full object-cover">
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-transparent"></div>
-  </div>
-
-  <div class="relative z-10 text-center px-6 mb-6 md:mb-8">
-    <h1 class="text-white text-3xl md:text-6xl font-black uppercase tracking-tighter leading-tight">
-      Find Your Perfect <br><span class="text-indigo-400">Room & Stay</span>
-    </h1>
-  </div>
-
-  <div class="relative z-20 w-full max-w-6xl px-4 -mb-16 md:-mb-20">
-
-
-<!-- ================= DESKTOP FILTER ================= -->
-
-<div class="hidden md:flex bg-white rounded-full shadow-2xl p-2 items-center border border-white/10 backdrop-blur-md">
-
-<!-- LOCATION -->
-<div class="flex-[1.5] px-6 border-r border-gray-100 relative">
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5">Location</label>
-
-<input id="locationFilter"
-type="text"
-placeholder="Where are you going?"
-class="w-full bg-transparent text-sm font-bold focus:outline-none">
-
-<div id="locationSuggestions"
-class="absolute top-full left-0 w-full bg-white shadow-xl rounded-xl mt-2 hidden z-50 border border-gray-100 max-h-60 overflow-y-auto"></div>
-</div>
-
-
- <!-- GENDER -->
-<div class="flex-1 px-6 border-r border-gray-100">
-
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5">
-Gender
-</label>
-
-<div class="relative">
-
-<select id="genderFilter"
-class="w-full bg-transparent text-sm font-bold focus:outline-none appearance-none pr-6 cursor-pointer">
-
-<option value="">All</option>
-<option value="male">Male</option>
-<option value="female">Female</option>
-<option value="unisex">Unisex</option>
-
-</select>
-
-<svg class="w-4 h-4 text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none"
-fill="none"
-stroke="currentColor"
-viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-</svg>
-
-</div>
-
-</div>
-
-<!-- ROOM TYPE -->
-<div class="flex-1 px-6 border-r border-gray-100">
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5">Room Type</label>
-
-<select id="roomTypeFilter" class="w-full bg-transparent text-sm font-bold focus:outline-none">
-<option value="">All</option>
-<option value="hostel">Hostel</option>
-<option value="flat">Flat</option>
-<option value="pg_with_food">PG (With Food)</option>
-<option value="pg_no_food">PG (No Food)</option>
-</select>
-</div>
-
-
-<!-- AMENITIES -->
- <div class="flex-1 px-6 relative group py-1">
-
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5">
-Amenities
-</label>
-
-<div class="flex items-center justify-between cursor-pointer">
-
-<span class="text-sm font-bold text-slate-700">
-Select Extra
-</span>
-
-<!-- arrow -->
-<svg class="w-4 h-4 text-gray-400"
-fill="none"
-stroke="currentColor"
-viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-</svg>
-
-</div>
-
-<div class="absolute top-full left-0 w-full h-4 bg-transparent"></div>
-
-<div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-[110%] left-0 w-64 bg-white shadow-2xl rounded-2xl p-5 border border-gray-100 z-50">
-
-<p class="text-[9px] font-black text-gray-400 uppercase mb-3">
-Include Features
-</p>
-
-<div class="grid gap-3">
-
-<label class="flex items-center gap-3 text-xs font-bold">
-<input type="checkbox" value="AC" class="amenityCheck"> AC
-</label>
-
-<label class="flex items-center gap-3 text-xs font-bold">
-<input type="checkbox" value="Fridge" class="amenityCheck"> Fridge
-</label>
-
-<label class="flex items-center gap-3 text-xs font-bold">
-<input type="checkbox" value="RO Water" class="amenityCheck"> RO Water
-</label>
-
-<label class="flex items-center gap-3 text-xs font-bold">
-<input type="checkbox" value="Attached Washroom" class="amenityCheck"> Attached Washroom
-</label>
-
-<label class="flex items-center gap-3 text-xs font-bold">
-<input type="checkbox" value="Washing Machine" class="amenityCheck"> Washing Machine
-</label>
-
-</div>
-</div>
-</div>
-
-<button id="searchBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full">
-🔍
-</button>
-
-</div>
-
- <!-- ================= MOBILE SCROLL FILTER ================= -->
-
-<div class="md:hidden overflow-x-auto scrollbar-hide">
-
-<div class="flex gap-3 min-w-max bg-white rounded-full shadow-xl p-2 border border-gray-100">
-
-<!-- LOCATION -->
-<div class="px-4 min-w-[220px]">
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1">
-Location
-</label>
-
-<input id="locationFilterMobile"
-type="text"
-placeholder="Where are you going?"
-class="w-full bg-transparent text-sm font-bold focus:outline-none">
-</div>
-
-
-<!-- GENDER -->
-<div class="px-4 border-l border-gray-100 min-w-[150px]">
-
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1">
-Gender
-</label>
-
-<div class="relative">
-
-<select id="genderFilterMobile"
-class="w-full bg-transparent text-sm font-bold appearance-none focus:outline-none">
-
-<option value="">All</option>
-<option value="male">Male</option>
-<option value="female">Female</option>
-<option value="unisex">Unisex</option>
-
-</select>
-
-<svg class="w-4 h-4 absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
-fill="none"
-stroke="currentColor"
-viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-d="M19 9l-7 7-7-7"/>
-</svg>
-
-</div>
-</div>
-
-
-<!-- ROOM TYPE -->
-<div class="px-4 border-l border-gray-100 min-w-[170px]">
-
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1">
-Room Type
-</label>
-
-<div class="relative">
-
-<select id="roomTypeFilterMobile"
-class="w-full bg-transparent text-sm font-bold appearance-none focus:outline-none">
-
-<option value="">All</option>
-<option value="hostel">Hostel</option>
-<option value="flat">Flat</option>
-<option value="pg_with_food">PG (With Food)</option>
-<option value="pg_no_food">PG (No Food)</option>
-
-</select>
-
-<svg class="w-4 h-4 absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
-fill="none"
-stroke="currentColor"
-viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-d="M19 9l-7 7-7-7"/>
-</svg>
-
-</div>
-</div>
-
-
-<!-- AMENITIES -->
-<div class="px-4 border-l border-gray-100 min-w-[200px]">
-
-<label class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1">
-Amenities
-</label>
-
-<select id="amenitiesMobile"
-class="w-full bg-transparent text-sm font-bold focus:outline-none">
-
-<option value="">Any</option>
-<option value="AC">AC</option>
-<option value="Fridge">Fridge</option>
-<option value="RO Water">RO Water</option>
-<option value="Attached Washroom">Attached Washroom</option>
-<option value="Washing Machine">Washing Machine</option>
-
-</select>
-
-</div>
-
-
-<!-- SEARCH -->
-<button onclick="applyMobileFilters()"
-class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-full text-sm font-bold">
-
-Search
-
-</button>
-
-</div>
-
-</div>
-
-
-</div>
-</section>
-
-
-
-<!-- ================= MOBILE FILTER PANEL ================= -->
-
-<div id="mobile-slider" class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-300">
-
-<div class="absolute inset-0 bg-black/40"
-onclick="document.getElementById('mobile-slider').style.transform='translateX(100%)'"></div>
-
-
-<div class="absolute right-0 top-0 h-full w-[85%] bg-white shadow-2xl flex flex-col">
-
-
-<div class="p-6 border-b flex justify-between items-center">
-<h2 class="text-xl font-black">Filters</h2>
-
-<button onclick="document.getElementById('mobile-slider').style.transform='translateX(100%)'">
-✕
-</button>
-</div>
-
-
-<div class="flex-1 overflow-y-auto p-6 space-y-6">
-
-<!-- LOCATION -->
-<input id="mobileLocationFilter"
-type="text"
-placeholder="Location"
-class="w-full p-4 bg-gray-50 rounded-xl border">
-
-
-<!-- ROOM TYPE -->
-<select id="mobileRoomTypeFilter"
-class="w-full p-4 bg-gray-50 rounded-xl border">
-
-<option value="">Room Type</option>
-<option value="hostel">Hostel</option>
-<option value="flat">Flat</option>
-<option value="pg_with_food">PG (With Food)</option>
-<option value="pg_no_food">PG (No Food)</option>
-
-</select>
-
-
-<!-- AMENITIES -->
-<div class="grid gap-3">
-
-<label><input type="checkbox" value="AC" class="amenityCheck"> AC</label>
-<label><input type="checkbox" value="Fridge" class="amenityCheck"> Fridge</label>
-<label><input type="checkbox" value="RO Water" class="amenityCheck"> RO Water</label>
-<label><input type="checkbox" value="Attached Washroom" class="amenityCheck"> Attached Washroom</label>
-<label><input type="checkbox" value="Washing Machine" class="amenityCheck"> Washing Machine</label>
-
-</div>
-
-</div>
-
-
-<div class="p-6 border-t">
-<button onclick="applyMobileFilters()"
-class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold">
-Apply Filters
-</button>
-</div>
-
-
-</div>
-</div>
-<!-- ==============================rooms =================================== -->
-
-
-<section class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
-    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 md:gap-0 mb-6 md:mb-10">
-        <div>
-            <h2 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
-                Available Rooms
-            </h2>
+          </a>
+
+          <div class="relative hidden" id="profile-dropdown-container">
+            <button
+              onclick="toggleMainProfileDropdown()"
+              class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full p-1 pr-3 hover:bg-slate-100 transition focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            >
+              <div
+                id="user-avatar"
+                class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black uppercase shadow-inner border border-white/20"
+              >
+                --
+              </div>
+              <svg
+                class="h-4 w-4 text-slate-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            <div
+              id="main-profile-dropdown"
+              class="absolute right-0 mt-3 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl hidden z-50 overflow-hidden modal-animate"
+            >
+              <div class="px-5 py-4 border-b bg-slate-50/50">
+                <p
+                  id="user-role-label"
+                  class="text-[10px] font-black text-indigo-600 uppercase tracking-widest"
+                >
+                  Account
+                </p>
+                <p
+                  id="user-email-nav"
+                  class="text-xs font-bold text-slate-700 truncate"
+                >
+                  Loading...
+                </p>
+              </div>
+
+              <div class="p-1.5">
+                <a
+                  id="dashboard-link"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition font-medium"
+                >
+                  <span class="text-indigo-400">🏠</span> Dashboard
+                </a>
+
+                <a
+                  id="profile-link"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition font-medium"
+                >
+                  <span class="text-indigo-400">👤</span> My Profile
+                </a>
+
+                <button
+                  onclick="handleMainLogout()"
+                  class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition font-medium border-t border-slate-50 mt-1 pt-2"
+                >
+                  <span class="text-red-400">🚪</span> Logout
+                </button>
+              </div>
             </div>
-        
-        <div class="flex items-center gap-2">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-            <p class="text-slate-500 text-xs md:text-sm font-bold uppercase tracking-wider" id="roomCount">
-                Loading rooms...
-            </p>
+          </div>
+
+          <button
+            id="menu-btn"
+            class="md:hidden text-gray-600 focus:outline-none z-[60]"
+          >
+            <svg
+              id="menu-icon"
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
         </div>
-    </div>
+      </div>
 
-    <div id="mainRoomGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-      <div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
-<div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
-<div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
-<div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
+      <div
+        id="menu-overlay"
+        class="fixed inset-0 bg-black/20 hidden z-40 md:hidden"
+      ></div>
 
-        </div>
-</section>
+      <div
+        id="mobile-menu"
+        class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-white shadow-2xl z-50 md:hidden hidden-custom"
+      >
+        <div
+          class="flex flex-col p-8 pt-24 space-y-6 font-medium text-gray-600 h-full"
+        >
+          <a
+            href="../index.html"
+            class="hover:text-indigo-600 transition text-lg"
+            >Home</a
+          >
+          <a href="about.html" class="hover:text-indigo-600 transition text-lg"
+            >About</a
+          >
+          <a href="rooms.html" class="text-indigo-600 text-lg">Rooms</a>
+          <a
+            href="../index.html#cta"
+            class="hover:text-indigo-600 transition text-lg"
+            >Register your Property</a
+          >
+          <a
+            href="contact.html"
+            class="hover:text-indigo-600 transition text-lg"
+            >Contact</a
+          >
+          <hr class="border-gray-100" />
+          <div id="mobile-auth-container">
+            <a href="login.html" id="mobile-login-btn">
+              <button
+                class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg"
+              >
+                Login
+              </button>
+            </a>
 
-
-<!-- ==============================footer  =================================== -->
- <footer class="bg-[#05192d] text-gray-300 pt-12 pb-8 px-6 font-sans border-t border-white/5">
-  <div class="max-w-7xl mx-auto">
-    
-    <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-12">
-      
-      <div class="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
-        <div class="flex items-center gap-3 mb-4">
-          
-          <div class="flex flex-col">
-            <a href="../index.html"><img src="../imgs/logo-footer.png" alt="" width="160px"></a>
+            <div id="mobile-profile-links" class="hidden space-y-6">
+              <button
+                onclick="handleMainLogout()"
+                class="w-full text-left text-red-600 text-lg font-bold"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
-        <p class="text-white font-semibold mb-2 text-sm md:text-base  ">A Trusted Nest For Everyone, Everywhere.</p>
-        <p class="text-white text-xs md:text-sm leading-relaxed mb-6">
-          Revolutionizing the student accommodation market through trust, verification, and technology.
-        </p>
+      </div>
+    </nav>
 
-       <div class="flex gap-3">
-          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5">📷</a>
-          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"><b>in</b></a>
-          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"><b>i</b></a>
-          <a href="#" class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"><b>X</b></a>
-        </div>
+    <script>
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const menuIcon = document.getElementById("menu-icon");
+      const overlay = document.getElementById("menu-overlay");
+
+      function toggleMenu() {
+        const isHidden = mobileMenu.classList.contains("hidden-custom");
+
+        if (isHidden) {
+          // Open the Drawer
+          mobileMenu.classList.remove("hidden-custom");
+          overlay.classList.remove("hidden");
+          menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>`;
+          document.body.style.overflow = "hidden"; // Stop scrolling background
+        } else {
+          // Close the Drawer
+          mobileMenu.classList.add("hidden-custom");
+          overlay.classList.add("hidden");
+          menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>`;
+          document.body.style.overflow = ""; // Resume scrolling
+        }
+      }
+
+      menuBtn.addEventListener("click", toggleMenu);
+      overlay.addEventListener("click", toggleMenu);
+
+      // Auto-close drawer if a link is clicked
+      const navLinks = mobileMenu.querySelectorAll("a");
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          if (!mobileMenu.classList.contains("hidden-custom")) {
+            toggleMenu();
+          }
+        });
+      });
+    </script>
+
+    <!-- ==============================header=================================== -->
+
+    <section
+      class="relative w-full h-[380px] md:h-[450px] flex flex-col items-center justify-center overflow-visible font-sans"
+    >
+      <div class="absolute inset-0 z-0">
+        <img
+          src="https://assets.architecturaldigest.in/photos/65b2aecf269da4a0ee6c9b40/master/w_1600%2Cc_limit/atr.royalmansion-bedroom2-mr.jpg"
+          loading="eager"
+          fetchpriority="high"
+          class="w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-transparent"
+        ></div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-10 w-full md:w-auto text-center md:text-left">
-        <div>
-          <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">Explore</h4>
-          <ul class="space-y-3 text-xs md:text-sm text-white">
-            <li><a href="rooms.html" class="hover:text-white transition-colors">Search Rooms</a></li>
-            <li><a href="pg.html" class="hover:text-white transition-colors">Private PGs</a></li>
-            <li><a href="flat.html" class="hover:text-white transition-colors">Shared Flats</a></li>
-            <li><a href="hostel.html" class="hover:text-white transition-colors">Hostels</a></li>
-          </ul>
+      <div class="relative z-10 text-center px-6 mb-6 md:mb-8">
+        <h1
+          class="text-white text-3xl md:text-6xl font-black uppercase tracking-tighter leading-tight"
+        >
+          Find Your Perfect <br /><span class="text-indigo-400"
+            >Room & Stay</span
+          >
+        </h1>
+      </div>
+
+      <div class="relative z-20 w-full max-w-6xl px-4 -mb-16 md:-mb-20">
+        <!-- ================= DESKTOP FILTER ================= -->
+
+        <div
+          class="hidden md:flex bg-white rounded-full shadow-2xl p-2 items-center border border-white/10 backdrop-blur-md"
+        >
+          <!-- LOCATION -->
+          <div class="flex-[1.5] px-6 border-r border-gray-100 relative">
+            <label
+              class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5"
+              >Location</label
+            >
+
+            <input
+              id="locationFilter"
+              type="text"
+              placeholder="Where are you going?"
+              class="w-full bg-transparent text-sm font-bold focus:outline-none"
+            />
+
+            <div
+              id="locationSuggestions"
+              class="absolute top-full left-0 w-full bg-white shadow-xl rounded-xl mt-2 hidden z-50 border border-gray-100 max-h-60 overflow-y-auto"
+            ></div>
+          </div>
+
+          <!-- GENDER -->
+          <div class="flex-1 px-6 border-r border-gray-100">
+            <label
+              class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5"
+            >
+              Gender
+            </label>
+
+            <div class="relative">
+              <select
+                id="genderFilter"
+                class="w-full bg-transparent text-sm font-bold focus:outline-none appearance-none pr-6 cursor-pointer"
+              >
+                <option value="">All</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unisex">Unisex</option>
+              </select>
+
+              <svg
+                class="w-4 h-4 text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- ROOM TYPE -->
+          <div class="flex-1 px-6 border-r border-gray-100">
+            <label
+              class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5"
+              >Room Type</label
+            >
+
+            <select
+              id="roomTypeFilter"
+              class="w-full bg-transparent text-sm font-bold focus:outline-none"
+            >
+              <option value="">All</option>
+              <option value="hostel">Hostel</option>
+              <option value="flat">Flat</option>
+              <option value="pg_with_food">PG (With Food)</option>
+              <option value="pg_no_food">PG (No Food)</option>
+            </select>
+          </div>
+
+          <!-- AMENITIES -->
+          <div class="flex-1 px-6 relative group py-1">
+            <label
+              class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-0.5"
+            >
+              Amenities
+            </label>
+
+            <div class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-bold text-slate-700">
+                Select Extra
+              </span>
+
+              <!-- arrow -->
+              <svg
+                class="w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+
+            <div
+              class="absolute top-full left-0 w-full h-4 bg-transparent"
+            ></div>
+
+            <div
+              class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-[110%] left-0 w-64 bg-white shadow-2xl rounded-2xl p-5 border border-gray-100 z-50"
+            >
+              <p class="text-[9px] font-black text-gray-400 uppercase mb-3">
+                Include Features
+              </p>
+
+              <div class="grid gap-3">
+                <label class="flex items-center gap-3 text-xs font-bold">
+                  <input type="checkbox" value="AC" class="amenityCheck" /> AC
+                </label>
+
+                <label class="flex items-center gap-3 text-xs font-bold">
+                  <input type="checkbox" value="Fridge" class="amenityCheck" />
+                  Fridge
+                </label>
+
+                <label class="flex items-center gap-3 text-xs font-bold">
+                  <input
+                    type="checkbox"
+                    value="RO Water"
+                    class="amenityCheck"
+                  />
+                  RO Water
+                </label>
+
+                <label class="flex items-center gap-3 text-xs font-bold">
+                  <input
+                    type="checkbox"
+                    value="Attached Washroom"
+                    class="amenityCheck"
+                  />
+                  Attached Washroom
+                </label>
+
+                <label class="flex items-center gap-3 text-xs font-bold">
+                  <input
+                    type="checkbox"
+                    value="Washing Machine"
+                    class="amenityCheck"
+                  />
+                  Washing Machine
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button
+            id="searchBtn"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full"
+          >
+            🔍
+          </button>
         </div>
-        <div>
-          <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">Company</h4>
-          <ul class="space-y-3 text-xs md:text-sm text-white">
-            <li><a href="about.html" class="hover:text-white transition-colors">About Us</a></li>
-            <li><a href="privacy-policy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
-            <li><a href="terms&conditions.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
-            <li><a href="contact.html" class="hover:text-white transition-colors">Contact Us</a></li>
-          </ul>
+
+        <!-- ================= MOBILE SCROLL FILTER ================= -->
+
+        <div class="md:hidden overflow-x-auto scrollbar-hide">
+          <div
+            class="flex gap-3 min-w-max bg-white rounded-full shadow-xl p-2 border border-gray-100"
+          >
+            <!-- LOCATION -->
+            <div class="px-4 min-w-[220px]">
+              <label
+                class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1"
+              >
+                Location
+              </label>
+
+              <input
+                id="locationFilterMobile"
+                type="text"
+                placeholder="Where are you going?"
+                class="w-full bg-transparent text-sm font-bold focus:outline-none"
+              />
+            </div>
+
+            <!-- GENDER -->
+            <div class="px-4 border-l border-gray-100 min-w-[150px]">
+              <label
+                class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1"
+              >
+                Gender
+              </label>
+
+              <div class="relative">
+                <select
+                  id="genderFilterMobile"
+                  class="w-full bg-transparent text-sm font-bold appearance-none focus:outline-none"
+                >
+                  <option value="">All</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="unisex">Unisex</option>
+                </select>
+
+                <svg
+                  class="w-4 h-4 absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <!-- ROOM TYPE -->
+            <div class="px-4 border-l border-gray-100 min-w-[170px]">
+              <label
+                class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1"
+              >
+                Room Type
+              </label>
+
+              <div class="relative">
+                <select
+                  id="roomTypeFilterMobile"
+                  class="w-full bg-transparent text-sm font-bold appearance-none focus:outline-none"
+                >
+                  <option value="">All</option>
+                  <option value="hostel">Hostel</option>
+                  <option value="flat">Flat</option>
+                  <option value="pg_with_food">PG (With Food)</option>
+                  <option value="pg_no_food">PG (No Food)</option>
+                </select>
+
+                <svg
+                  class="w-4 h-4 absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <!-- AMENITIES -->
+            <div class="px-4 border-l border-gray-100 min-w-[200px]">
+              <label
+                class="block text-[10px] uppercase font-bold text-indigo-600 tracking-widest mb-1"
+              >
+                Amenities
+              </label>
+
+              <select
+                id="amenitiesMobile"
+                class="w-full bg-transparent text-sm font-bold focus:outline-none"
+              >
+                <option value="">Any</option>
+                <option value="AC">AC</option>
+                <option value="Fridge">Fridge</option>
+                <option value="RO Water">RO Water</option>
+                <option value="Attached Washroom">Attached Washroom</option>
+                <option value="Washing Machine">Washing Machine</option>
+              </select>
+            </div>
+
+            <!-- SEARCH -->
+            <button
+              onclick="applyMobileFilters()"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-full text-sm font-bold"
+            >
+              Search
+            </button>
+          </div>
         </div>
-        <div class="col-span-2 md:col-span-1">
-          <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">Product</h4>
-          <ul class="space-y-3 text-xs md:text-sm text-white">
-            <li><a href="../index.html#faq" class="hover:text-white transition-colors">FAQs</a></li>
-            <li><a href="../index.html#works" class="hover:text-white transition-colors">How Vynest works</a></li>
-            <li><a href="../index.html#cta" class="hover:text-white transition-colors">List Your Property</a></li>
-            <li><a href="../index.html#why" class="hover:text-white transition-colors">Why Choose Us</a></li>
-          </ul>
+      </div>
+    </section>
+
+    <!-- ================= MOBILE FILTER PANEL ================= -->
+
+    <div
+      id="mobile-slider"
+      class="fixed inset-0 z-[100] transform translate-x-full transition-transform duration-300"
+    >
+      <div
+        class="absolute inset-0 bg-black/40"
+        onclick="
+          document.getElementById('mobile-slider').style.transform =
+            'translateX(100%)'
+        "
+      ></div>
+
+      <div
+        class="absolute right-0 top-0 h-full w-[85%] bg-white shadow-2xl flex flex-col"
+      >
+        <div class="p-6 border-b flex justify-between items-center">
+          <h2 class="text-xl font-black">Filters</h2>
+
+          <button
+            onclick="
+              document.getElementById('mobile-slider').style.transform =
+                'translateX(100%)'
+            "
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+          <!-- LOCATION -->
+          <input
+            id="mobileLocationFilter"
+            type="text"
+            placeholder="Location"
+            class="w-full p-4 bg-gray-50 rounded-xl border"
+          />
+
+          <!-- ROOM TYPE -->
+          <select
+            id="mobileRoomTypeFilter"
+            class="w-full p-4 bg-gray-50 rounded-xl border"
+          >
+            <option value="">Room Type</option>
+            <option value="hostel">Hostel</option>
+            <option value="flat">Flat</option>
+            <option value="pg_with_food">PG (With Food)</option>
+            <option value="pg_no_food">PG (No Food)</option>
+          </select>
+
+          <!-- AMENITIES -->
+          <div class="grid gap-3">
+            <label
+              ><input type="checkbox" value="AC" class="amenityCheck" />
+              AC</label
+            >
+            <label
+              ><input type="checkbox" value="Fridge" class="amenityCheck" />
+              Fridge</label
+            >
+            <label
+              ><input type="checkbox" value="RO Water" class="amenityCheck" />
+              RO Water</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                value="Attached Washroom"
+                class="amenityCheck"
+              />
+              Attached Washroom</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                value="Washing Machine"
+                class="amenityCheck"
+              />
+              Washing Machine</label
+            >
+          </div>
+        </div>
+
+        <div class="p-6 border-t">
+          <button
+            onclick="applyMobileFilters()"
+            class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold"
+          >
+            Apply Filters
+          </button>
         </div>
       </div>
     </div>
+    <!-- ==============================rooms =================================== -->
 
-    <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-      
-      <p class="text-[11px] md:text-xs text-white order-3 md:order-1">
-        © 2026 Vynest. All rights reserved.
-      </p>
+    <section class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+      <div
+        class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 md:gap-0 mb-6 md:mb-10"
+      >
+        <div>
+          <h2
+            class="text-2xl md:text-3xl font-black text-slate-900 leading-tight"
+          >
+            Available Rooms
+          </h2>
+        </div>
 
-      <div class="bg-[#0d2338] px-6 py-2 rounded-full border border-white/5 text-[11px] md:text-xs text-white shadow-xl order-1 md:order-2">
-        Made with <span class="text-rose-500 animate-pulse">❤️</span> by <span class="text-purple-300 font-semibold"><a href="https://webprimesite.com/">WebPrimeSite</a></span> in collaboration with <span class="text-purple-300 font-semibold"><a href="https://syntax-sinners.github.io/web/">SyntaxSinners</a></span>
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2 w-2">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"
+            ></span>
+          </span>
+          <p
+            class="text-slate-500 text-xs md:text-sm font-bold uppercase tracking-wider"
+            id="roomCount"
+          >
+            Loading rooms...
+          </p>
+        </div>
       </div>
 
-      <div class="flex gap-6 text-[11px] md:text-xs text-white font-medium order-2 md:order-3">
-        <a href="privacy-policy.html" class="hover:text-white transition-colors">Privacy Policy</a>
-        <a href="refund-policy.html" class="hover:text-white transition-colors">Refund Policy</a>
+      <div
+        id="mainRoomGrid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8"
+      >
+        <div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
+        <div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
+        <div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
+        <div class="animate-pulse bg-gray-100 h-64 rounded-3xl"></div>
       </div>
-    </div>
-
-  </div>
-</footer>
- 
- <script type="module"  >
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-getFirestore,
-collection,
-onSnapshot,
-query,
-orderBy,
-doc,
-getDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-getAuth,
-onAuthStateChanged,
-signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-
-/* ================= FIREBASE ================= */
-
-const firebaseConfig = {
-apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
-authDomain: "vynest-b58fa.firebaseapp.com",
-projectId: "vynest-b58fa",
-storageBucket: "vynest-b58fa.firebasestorage.app",
-messagingSenderId: "503196958388",
-appId: "1:503196958388:web:b78d771ddbd8dbf56161e1"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-
-/* ================= AUTH UI ================= */
-
-const loginBtn = document.getElementById("login-btn-container");
-const profileBox = document.getElementById("profile-dropdown-container");
-const userAvatar = document.getElementById("user-avatar");
-
-const mobileLogin = document.getElementById("mobile-login-btn");
-const mobileProfile = document.getElementById("mobile-profile-links");
-
-const dashboardLink = document.getElementById("dashboard-link");
-const mobileDashboardLink = document.getElementById("mobile-dashboard-link");
-
-onAuthStateChanged(auth, async (user) => {
-
-if (user) {
-
-const userRef = doc(db,"users",user.uid);
-const snap = await getDoc(userRef);
-
-if(snap.exists()){
-
-const userData = snap.data();
-
-if(userData.status === "blocked"){
-alert("Your account has been blocked.");
-await signOut(auth);
-window.location.href="../index.html";
-return;
-}
-
-loginBtn.style.display="none";
-profileBox.style.display="block";
-
-mobileLogin.style.display="none";
-mobileProfile.style.display="block";
-
-const email = user.email;
-document.getElementById("user-email-nav").innerText=email;
-
-userAvatar.innerText=email.charAt(0).toUpperCase();
-
-const role=userData.role || "student";
-
-document.getElementById("user-role-label").innerText=
-role==="owner" ? "Owner Account" : "Student Account";
-
-const dashboardPath =
-role==="owner"
-? "../dashboards/owner/index.html"
-: "../dashboards/student/index.html";
-
-const profilePath =
-role==="owner"
-? "../dashboards/owner/profile.html"
-: "../dashboards/student/profile.html";
-
-dashboardLink.href=dashboardPath;
-mobileDashboardLink.href=dashboardPath;
-document.getElementById("profile-link").href=profilePath;
-
-}
-
-}
-else{
-
-loginBtn.style.display="block";
-profileBox.style.display="none";
-
-mobileLogin.style.display="block";
-mobileProfile.style.display="none";
-
-}
-
-});
-
-
-window.toggleMainProfileDropdown=()=>{
-document.getElementById("main-profile-dropdown").classList.toggle("hidden");
-}
-
-window.handleMainLogout=async()=>{
-await signOut(auth);
-window.location.href="../index.html";
-}
-
-
-/* ================= STYLE HELPERS ================= */
-
-const getPropertyStyle = (type)=>{
-switch(type){
-case "flat": return "bg-purple-50 text-purple-600 border-purple-100";
-case "pg_with_food": return "bg-green-50 text-green-600 border-green-100";
-case "pg_no_food": return "bg-red-50 text-red-600 border-red-100";
-case "hostel": return "bg-slate-100 text-slate-600 border-slate-200";
-default: return "bg-gray-50 text-gray-600 border-gray-100";
-}
-}
-
-const getGenderStyle = (gender)=>{
-switch(gender){
-case "male": return "bg-blue-50 text-blue-600 border-blue-100";
-case "female": return "bg-pink-50 text-pink-600 border-pink-100";
-case "unisex": return "bg-yellow-50 text-yellow-600 border-yellow-100";
-default: return "bg-gray-50 text-gray-600 border-gray-100";
-}
-}
-
-
-/* ================= ROOMS DATA ================= */
-
-let allRooms=[];
-let locationSet=new Set();
-
-function fetchMainRooms(){
-
-const q=query(collection(db,"rooms"),orderBy("createdAt","desc"));
-
-onSnapshot(q,(snapshot)=>{
-
-allRooms=[];
-locationSet.clear();
-
-snapshot.forEach(docSnap=>{
-
-const data=docSnap.data();
-
-allRooms.push({
-id:docSnap.id,
-...data
-});
-
-if(data.address){
-locationSet.add(data.address);
-}
-
-});
-
-renderRooms(allRooms);
-
-});
-
-}
-
-
-/* ================= RENDER ROOMS ================= */
-
-function renderRooms(roomList){
-
-const grid=document.getElementById("mainRoomGrid");
-const count=document.getElementById("roomCount");
-
-grid.innerHTML="";
-
-if(!roomList.length){
-grid.innerHTML=`<p class="col-span-full text-center py-10 text-gray-400">No rooms found</p>`;
-count.innerText="0 Properties Found";
-return;
-}
-
-count.innerText=`${roomList.length} Properties Found`;
-
-roomList.forEach(room=>{
-
-const pStyle=getPropertyStyle(room.propertyType);
-const gStyle=getGenderStyle(room.gender);
-
-const bedsLeft=room.totalBeds || 0;
-const isAvailable=bedsLeft>0;
-
-const badgeClass=isAvailable ? "bg-black/60":"bg-red-600";
-const badgeText=isAvailable ? bedsLeft+" Beds Left":"Sold Out";
-
- grid.innerHTML+=`
+    </section>
+
+    <!-- ==============================footer  =================================== -->
+    <footer
+      class="bg-[#05192d] text-gray-300 pt-12 pb-8 px-6 font-sans border-t border-white/5"
+    >
+      <div class="max-w-7xl mx-auto">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-12"
+        >
+          <div
+            class="flex flex-col items-center md:items-start text-center md:text-left max-w-sm"
+          >
+            <div class="flex items-center gap-3 mb-4">
+              <div class="flex flex-col">
+                <a href="../index.html"
+                  ><img src="../imgs/logo-footer.png" alt="" width="160px"
+                /></a>
+              </div>
+            </div>
+            <p class="text-white font-semibold mb-2 text-sm md:text-base">
+              A Trusted Nest For Everyone, Everywhere.
+            </p>
+            <p class="text-white text-xs md:text-sm leading-relaxed mb-6">
+              Revolutionizing the student accommodation market through trust,
+              verification, and technology.
+            </p>
+
+            <div class="flex gap-3">
+              <a
+                href="#"
+                class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"
+                >📷</a
+              >
+              <a
+                href="#"
+                class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"
+                ><b>in</b></a
+              >
+              <a
+                href="#"
+                class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"
+                ><b>i</b></a
+              >
+              <a
+                href="#"
+                class="w-10 h-10 bg-white/5 hover:bg-indigo-600 rounded-lg flex items-center justify-center transition-all border border-white/5"
+                ><b>X</b></a
+              >
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-10 w-full md:w-auto text-center md:text-left"
+          >
+            <div>
+              <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">
+                Explore
+              </h4>
+              <ul class="space-y-3 text-xs md:text-sm text-white">
+                <li>
+                  <a
+                    href="rooms.html"
+                    class="hover:text-white transition-colors"
+                    >Search Rooms</a
+                  >
+                </li>
+                <li>
+                  <a href="pg.html" class="hover:text-white transition-colors"
+                    >Private PGs</a
+                  >
+                </li>
+                <li>
+                  <a href="flat.html" class="hover:text-white transition-colors"
+                    >Shared Flats</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="hostel.html"
+                    class="hover:text-white transition-colors"
+                    >Hostels</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">
+                Company
+              </h4>
+              <ul class="space-y-3 text-xs md:text-sm text-white">
+                <li>
+                  <a
+                    href="about.html"
+                    class="hover:text-white transition-colors"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="privacy-policy.html"
+                    class="hover:text-white transition-colors"
+                    >Privacy Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="terms&conditions.html"
+                    class="hover:text-white transition-colors"
+                    >Terms & Conditions</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="contact.html"
+                    class="hover:text-white transition-colors"
+                    >Contact Us</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-span-2 md:col-span-1">
+              <h4 class="text-purple-600 font-bold text-sm md:text-base mb-5">
+                Product
+              </h4>
+              <ul class="space-y-3 text-xs md:text-sm text-white">
+                <li>
+                  <a
+                    href="../index.html#faq"
+                    class="hover:text-white transition-colors"
+                    >FAQs</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="../index.html#works"
+                    class="hover:text-white transition-colors"
+                    >How Vynest works</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="../index.html#cta"
+                    class="hover:text-white transition-colors"
+                    >List Your Property</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="../index.html#why"
+                    class="hover:text-white transition-colors"
+                    >Why Choose Us</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6"
+        >
+          <p class="text-[11px] md:text-xs text-white order-3 md:order-1">
+            © 2026 Vynest. All rights reserved.
+          </p>
+
+          <div
+            class="bg-[#0d2338] px-6 py-2 rounded-full border border-white/5 text-[11px] md:text-xs text-white shadow-xl order-1 md:order-2"
+          >
+            Made with <span class="text-rose-500 animate-pulse">❤️</span> by
+            <span class="text-purple-300 font-semibold"
+              ><a href="https://webprimesite.com/">WebPrimeSite</a></span
+            >
+            in collaboration with
+            <span class="text-purple-300 font-semibold"
+              ><a href="https://syntax-sinners.github.io/web/"
+                >SyntaxSinners</a
+              ></span
+            >
+          </div>
+
+          <div
+            class="flex gap-6 text-[11px] md:text-xs text-white font-medium order-2 md:order-3"
+          >
+            <a
+              href="privacy-policy.html"
+              class="hover:text-white transition-colors"
+              >Privacy Policy</a
+            >
+            <a
+              href="refund-policy.html"
+              class="hover:text-white transition-colors"
+              >Refund Policy</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        onSnapshot,
+        query,
+        orderBy,
+        doc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+      /* ================= FIREBASE ================= */
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAd_HMHS9QkOe2pt_tH-sunWpuIaULCxtY",
+        authDomain: "vynest-b58fa.firebaseapp.com",
+        projectId: "vynest-b58fa",
+        storageBucket: "vynest-b58fa.firebasestorage.app",
+        messagingSenderId: "503196958388",
+        appId: "1:503196958388:web:b78d771ddbd8dbf56161e1",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      /* ================= AUTH UI ================= */
+
+      const loginBtn = document.getElementById("login-btn-container");
+      const profileBox = document.getElementById("profile-dropdown-container");
+      const userAvatar = document.getElementById("user-avatar");
+
+      const mobileLogin = document.getElementById("mobile-login-btn");
+      const mobileProfile = document.getElementById("mobile-profile-links");
+
+      const dashboardLink = document.getElementById("dashboard-link");
+      const mobileDashboardLink = document.getElementById(
+        "mobile-dashboard-link",
+      );
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          const snap = await getDoc(userRef);
+
+          if (snap.exists()) {
+            const userData = snap.data();
+
+            if (userData.status === "blocked") {
+              alert("Your account has been blocked.");
+              await signOut(auth);
+              window.location.href = "../index.html";
+              return;
+            }
+
+            loginBtn.style.display = "none";
+            profileBox.style.display = "block";
+
+            mobileLogin.style.display = "none";
+            mobileProfile.style.display = "block";
+
+            const email = user.email;
+            document.getElementById("user-email-nav").innerText = email;
+
+            userAvatar.innerText = email.charAt(0).toUpperCase();
+
+            const role = userData.role || "student";
+
+            document.getElementById("user-role-label").innerText =
+              role === "owner" ? "Owner Account" : "Student Account";
+
+            const dashboardPath =
+              role === "owner"
+                ? "../dashboards/owner/index.html"
+                : "../dashboards/student/index.html";
+
+            const profilePath =
+              role === "owner"
+                ? "../dashboards/owner/profile.html"
+                : "../dashboards/student/profile.html";
+
+            dashboardLink.href = dashboardPath;
+            mobileDashboardLink.href = dashboardPath;
+            document.getElementById("profile-link").href = profilePath;
+          }
+        } else {
+          loginBtn.style.display = "block";
+          profileBox.style.display = "none";
+
+          mobileLogin.style.display = "block";
+          mobileProfile.style.display = "none";
+        }
+      });
+
+      window.toggleMainProfileDropdown = () => {
+        document
+          .getElementById("main-profile-dropdown")
+          .classList.toggle("hidden");
+      };
+
+      window.handleMainLogout = async () => {
+        await signOut(auth);
+        window.location.href = "../index.html";
+      };
+
+      /* ================= STYLE HELPERS ================= */
+
+      const getPropertyStyle = (type) => {
+        switch (type) {
+          case "flat":
+            return "bg-purple-50 text-purple-600 border-purple-100";
+          case "pg_with_food":
+            return "bg-green-50 text-green-600 border-green-100";
+          case "pg_no_food":
+            return "bg-red-50 text-red-600 border-red-100";
+          case "hostel":
+            return "bg-slate-100 text-slate-600 border-slate-200";
+          default:
+            return "bg-gray-50 text-gray-600 border-gray-100";
+        }
+      };
+
+      const getGenderStyle = (gender) => {
+        switch (gender) {
+          case "male":
+            return "bg-blue-50 text-blue-600 border-blue-100";
+          case "female":
+            return "bg-pink-50 text-pink-600 border-pink-100";
+          case "unisex":
+            return "bg-yellow-50 text-yellow-600 border-yellow-100";
+          default:
+            return "bg-gray-50 text-gray-600 border-gray-100";
+        }
+      };
+
+      /* ================= ROOMS DATA ================= */
+
+      let allRooms = [];
+      let locationSet = new Set();
+
+      function fetchMainRooms() {
+        const q = query(collection(db, "rooms"), orderBy("createdAt", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+          allRooms = [];
+          locationSet.clear();
+
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+
+            allRooms.push({
+              id: docSnap.id,
+              ...data,
+            });
+
+            if (data.address) {
+              locationSet.add(data.address);
+            }
+          });
+
+          renderRooms(allRooms);
+        });
+      }
+
+      /* ================= RENDER ROOMS ================= */
+
+      function renderRooms(roomList) {
+        const grid = document.getElementById("mainRoomGrid");
+        const count = document.getElementById("roomCount");
+
+        grid.innerHTML = "";
+
+        if (!roomList.length) {
+          grid.innerHTML = `<p class="col-span-full text-center py-10 text-gray-400">No rooms found</p>`;
+          count.innerText = "0 Properties Found";
+          return;
+        }
+
+        count.innerText = `${roomList.length} Properties Found`;
+
+        roomList.forEach((room) => {
+          const pStyle = getPropertyStyle(room.propertyType);
+          const gStyle = getGenderStyle(room.gender);
+
+          const bedsLeft = room.totalBeds || 0;
+          const isAvailable = bedsLeft > 0;
+
+          const badgeClass = isAvailable ? "bg-black/60" : "bg-red-600";
+          const badgeText = isAvailable ? bedsLeft + " Beds Left" : "Sold Out";
+
+          grid.innerHTML += `
 
 <a href="room-details.html?id=${room.id}" 
    class="block group cursor-pointer">
@@ -854,7 +1168,7 @@ ${badgeText}
 
 <div class="h-52 overflow-hidden">
 <img 
-src="${room.imageUrls?.[0] || 'https://via.placeholder.com/400x300'}"
+src="${room.imageUrls?.[0] || "https://via.placeholder.com/400x300"}"
 loading="lazy"
 decoding="async"
 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
@@ -868,7 +1182,7 @@ class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
 <div class="flex gap-1 shrink-0">
 
 <span class="${pStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
-${room.propertyType.replace(/_/g," ")}
+${room.propertyType.replace(/_/g, " ")}
 </span>
 
 <span class="${gStyle} text-[8px] font-bold px-2 py-0.5 rounded uppercase border">
@@ -888,8 +1202,8 @@ ${room.gender}
 </div>
 
 <!-- visual button only -->
-<span class="${isAvailable?'bg-indigo-600':'bg-slate-400'} text-white px-4 py-2 rounded-xl text-xs font-bold">
-${isAvailable?'View Details':'Full'}
+<span class="${isAvailable ? "bg-indigo-600" : "bg-slate-400"} text-white px-4 py-2 rounded-xl text-xs font-bold">
+${isAvailable ? "View Details" : "Full"}
 </span>
 
 </div>
@@ -900,197 +1214,181 @@ ${isAvailable?'View Details':'Full'}
 
 </a>
 `;
-});
+        });
+      }
 
-}
+      /* ================= LOCATION SUGGESTIONS ================= */
 
+      const locationInput = document.getElementById("locationFilter");
+      const suggestionBox = document.getElementById("locationSuggestions");
 
-/* ================= LOCATION SUGGESTIONS ================= */
+      locationInput.addEventListener("input", () => {
+        const value = locationInput.value.toLowerCase();
+        suggestionBox.innerHTML = "";
 
-const locationInput=document.getElementById("locationFilter");
-const suggestionBox=document.getElementById("locationSuggestions");
+        if (!value) {
+          suggestionBox.classList.add("hidden");
+          return;
+        }
 
-locationInput.addEventListener("input",()=>{
+        const matches = [...locationSet]
+          .filter((loc) => loc.toLowerCase().includes(value))
+          .slice(0, 6);
 
-const value=locationInput.value.toLowerCase();
-suggestionBox.innerHTML="";
+        if (!matches.length) {
+          suggestionBox.classList.add("hidden");
+          return;
+        }
 
-if(!value){
-suggestionBox.classList.add("hidden");
-return;
-}
+        matches.forEach((loc) => {
+          const div = document.createElement("div");
 
-const matches=[...locationSet]
-.filter(loc=>loc.toLowerCase().includes(value))
-.slice(0,6);
+          div.className =
+            "px-4 py-2 text-sm font-medium text-slate-700 hover:bg-indigo-50 cursor-pointer";
 
-if(!matches.length){
-suggestionBox.classList.add("hidden");
-return;
-}
+          div.innerText = loc;
 
-matches.forEach(loc=>{
+          div.onclick = () => {
+            locationInput.value = loc;
+            suggestionBox.classList.add("hidden");
+          };
 
-const div=document.createElement("div");
+          suggestionBox.appendChild(div);
+        });
 
-div.className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-indigo-50 cursor-pointer";
+        suggestionBox.classList.remove("hidden");
+      });
 
-div.innerText=loc;
+      document.addEventListener("click", (e) => {
+        if (!locationInput.contains(e.target)) {
+          suggestionBox.classList.add("hidden");
+        }
+      });
+      /* ================= MOBILE LOCATION SUGGESTIONS ================= */
 
-div.onclick=()=>{
-locationInput.value=loc;
-suggestionBox.classList.add("hidden");
-}
+      const mobileLocationInput = document.getElementById(
+        "locationFilterMobile",
+      );
 
-suggestionBox.appendChild(div);
+      if (mobileLocationInput) {
+        mobileLocationInput.addEventListener("input", () => {
+          const value = mobileLocationInput.value.toLowerCase();
 
-});
+          suggestionBox.innerHTML = "";
 
-suggestionBox.classList.remove("hidden");
+          if (!value) {
+            suggestionBox.classList.add("hidden");
+            return;
+          }
 
-});
+          const matches = [...locationSet]
+            .filter((loc) => loc.toLowerCase().includes(value))
+            .slice(0, 6);
 
-document.addEventListener("click",(e)=>{
-if(!locationInput.contains(e.target)){
-suggestionBox.classList.add("hidden");
-}
-});
-/* ================= MOBILE LOCATION SUGGESTIONS ================= */
+          if (!matches.length) {
+            suggestionBox.classList.add("hidden");
+            return;
+          }
 
-const mobileLocationInput = document.getElementById("locationFilterMobile");
+          matches.forEach((loc) => {
+            const div = document.createElement("div");
 
-if(mobileLocationInput){
+            div.className =
+              "px-4 py-2 text-sm font-medium text-slate-700 hover:bg-indigo-50 cursor-pointer";
 
-mobileLocationInput.addEventListener("input",()=>{
+            div.innerText = loc;
 
-const value = mobileLocationInput.value.toLowerCase();
+            div.onclick = () => {
+              mobileLocationInput.value = loc;
 
-suggestionBox.innerHTML="";
+              document.getElementById("locationFilter").value = loc;
 
-if(!value){
-suggestionBox.classList.add("hidden");
-return;
-}
+              suggestionBox.classList.add("hidden");
+            };
 
-const matches=[...locationSet]
-.filter(loc=>loc.toLowerCase().includes(value))
-.slice(0,6);
+            suggestionBox.appendChild(div);
+          });
 
-if(!matches.length){
-suggestionBox.classList.add("hidden");
-return;
-}
+          suggestionBox.classList.remove("hidden");
+        });
+      }
 
-matches.forEach(loc=>{
+      /* ================= FILTER SYSTEM ================= */
 
-const div=document.createElement("div");
+      document
+        .getElementById("searchBtn")
+        .addEventListener("click", applyFilters);
 
-div.className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-indigo-50 cursor-pointer";
+      function applyFilters() {
+        const location = document
+          .getElementById("locationFilter")
+          .value.toLowerCase();
+        const gender = document.getElementById("genderFilter").value;
+        const roomType = document.getElementById("roomTypeFilter").value;
 
-div.innerText=loc;
+        const selectedAmenities = [
+          ...document.querySelectorAll(".amenityCheck:checked"),
+        ].map((el) => el.value);
 
-div.onclick=()=>{
+        /* mobile amenity */
 
-mobileLocationInput.value=loc;
+        const mobileAmenity = document.getElementById("amenitiesMobile")?.value;
 
-document.getElementById("locationFilter").value=loc;
+        if (mobileAmenity) {
+          selectedAmenities.push(mobileAmenity);
+        }
+        let filtered = [...allRooms];
 
-suggestionBox.classList.add("hidden");
+        if (location) {
+          filtered = filtered.filter((r) =>
+            r.address?.toLowerCase().includes(location),
+          );
+        }
 
-}
+        if (gender) {
+          filtered = filtered.filter((r) => r.gender === gender);
+        }
 
-suggestionBox.appendChild(div);
+        if (roomType) {
+          filtered = filtered.filter((r) => r.propertyType === roomType);
+        }
 
-});
+        if (selectedAmenities.length) {
+          filtered = filtered.filter((room) =>
+            selectedAmenities.every((a) =>
+              room.amenities?.some(
+                (am) => am.toLowerCase() === a.toLowerCase(),
+              ),
+            ),
+          );
+        }
 
-suggestionBox.classList.remove("hidden");
+        renderRooms(filtered);
+      }
 
-});
+      /* ================= MOBILE FILTER ================= */
 
-}
+      window.applyMobileFilters = function () {
+        const location = document.getElementById("locationFilterMobile").value;
 
-/* ================= FILTER SYSTEM ================= */
+        const gender = document.getElementById("genderFilterMobile").value;
 
-document.getElementById("searchBtn").addEventListener("click",applyFilters);
+        const roomType = document.getElementById("roomTypeFilterMobile").value;
 
-function applyFilters(){
+        document.getElementById("locationFilter").value = location;
+        document.getElementById("genderFilter").value = gender;
+        document.getElementById("roomTypeFilter").value = roomType;
 
-const location = document.getElementById("locationFilter").value.toLowerCase();
-const gender = document.getElementById("genderFilter").value;
-const roomType = document.getElementById("roomTypeFilter").value;
+        applyFilters();
 
-const selectedAmenities = [
-...document.querySelectorAll(".amenityCheck:checked")
-].map(el => el.value);
+        document
+          .getElementById("mainRoomGrid")
+          .scrollIntoView({ behavior: "smooth" });
+      };
 
-/* mobile amenity */
+      /* ================= INIT ================= */
 
-const mobileAmenity =
-document.getElementById("amenitiesMobile")?.value;
-
-if(mobileAmenity){
-selectedAmenities.push(mobileAmenity);
-}
-let filtered=[...allRooms];
-
-if(location){
-filtered = filtered.filter(r =>
-r.address?.toLowerCase().includes(location)
-);
-}
-
-if(gender){
-filtered = filtered.filter(r => r.gender === gender);
-}
-
-if(roomType){
-filtered = filtered.filter(r => r.propertyType === roomType);
-}
-
-if(selectedAmenities.length){
-
-filtered = filtered.filter(room =>
-selectedAmenities.every(a =>
-room.amenities?.some(am => am.toLowerCase() === a.toLowerCase())
-)
-);
-
-}
-
-renderRooms(filtered);
-
-}
-
-
-/* ================= MOBILE FILTER ================= */
-
-window.applyMobileFilters=function(){
-
-const location =
-document.getElementById("locationFilterMobile").value;
-
-const gender =
-document.getElementById("genderFilterMobile").value;
-
-const roomType =
-document.getElementById("roomTypeFilterMobile").value;
-
-document.getElementById("locationFilter").value=location;
-document.getElementById("genderFilter").value=gender;
-document.getElementById("roomTypeFilter").value=roomType;
-
-applyFilters();
-
-document.getElementById("mainRoomGrid")
-.scrollIntoView({behavior:"smooth"});
-
-}
-
-
-/* ================= INIT ================= */
-
-fetchMainRooms();
- </script>
-</body>
-</html>  
- 
+      fetchMainRooms();
+    </script>
+  </body>
+</html>
