@@ -219,8 +219,34 @@ class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indig
   animation: scaleIn 0.3s ease;
 }
 </style>
-
+<!-- ERROR MODAL -->
+<div id="errorModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl animate-scaleIn">
     
+    <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-red-100">
+      <i class="fa-solid fa-xmark text-red-600 text-2xl"></i>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-2">Something went wrong</h2>
+    <p id="errorMessage" class="text-sm text-slate-500 mb-6">Error message here</p>
+
+    <button onclick="closeErrorModal()"
+      class="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition">
+      OK
+    </button>
+
+  </div>
+</div>
+    <script>
+        function showError(message) {
+  document.getElementById("errorMessage").innerText = message;
+  document.getElementById("errorModal").classList.remove("hidden");
+}
+
+function closeErrorModal() {
+  document.getElementById("errorModal").classList.add("hidden");
+} 
+    </script>
 <script>
 function togglePassword(inputId, iconId) {
 
@@ -273,11 +299,11 @@ if (input.type === "password") {
             const submitBtn = document.getElementById('submitBtn');
 
             if (password !== confirmPassword) {
-                alert("Passwords do not match!");
+                showError("Passwords do not match!");
                 return;
             }
             if (!termsCheck.checked) {
-                alert("Please agree to the Terms & Conditions to proceed.");
+               showError("Please agree to the Terms & Conditions to proceed.");
                 return;
             }
 
@@ -315,7 +341,7 @@ document.getElementById("continueBtn").onclick = () => {
 
             } catch (error) {
                 console.error(error);
-                alert("Error: " + error.message);
+                showError(error.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "CREATE ACCOUNT";
             }
